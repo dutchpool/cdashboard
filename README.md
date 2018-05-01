@@ -9,8 +9,11 @@ An overview of all your important Dpos delegate information (rank, amount of coi
 Crypto Dashboard is made to sort those things out and present you all your important information in one handy overview.
 
 
-_If you like this dashboard, please consider to vote for the dutch_pool delegates: dutch_pool, st3v3n, kippers, fnoufnou and thamar and receive the high sharing percentage of 90% per delegate!
-More info you can find on http://dutchpool.io_
+_If you like this dashboard, please consider to vote for all the dutch_pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and "thamar" and receive the high sharing percentage of 90% per delegate!
+
+If you are curious and want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
+
+More info about Dutchpool, our mission, our other tools and contributions to the Dpos ecosystem, please visit http://dutchpool.io_
 
 
 ## Installing it
@@ -89,7 +92,7 @@ We advise to run the cryptodashboard script every hour to collect it's data. The
 
 `00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py`
 
-When the script is ready and configured; you can setup the web environment, see the setup file "cdsahsboard_site_setup.txt".
+When the script is ready and configured; you can setup the web environment, see the setup file "cdashboard_site_setup.md".
 
 
 ## Command line usage
@@ -120,15 +123,17 @@ Known issues:
 
 ### 0.6
 - Initial release
+	- basic support for coin explorers (e.g. BTC and ETC); more needs to be done!
 
 
 ## To Do
 We are planning to integrate other cool features:
-- support for more coin explorers (e.g. BTC and ETC)
 - in the HTML overview, select the history period with a dropdown, now it is 24h and 48h;
 - add a live indication in the Dpos main dashboard, the time until a node will forge
-- strip/crunch the history of the log (default: cdashboard.json), e.g. after 48h only 1 entry a week
+- strip/crunch the history of the log (default: cdashboard.json), e.g. after 48h only 1 entry a day or week
+- add euro / dollar for amount of coins
 - create a web interface to maintain the config.json
+
 
 
 
