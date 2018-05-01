@@ -9,7 +9,7 @@ An overview of all your important Dpos delegate information (rank, amount of coi
 Crypto Dashboard is made to sort those things out and present you all your important information in one handy overview.
 
 
-_If you like this dashboard, please consider to vote for all the dutch_pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and "thamar" and receive the high sharing percentage of 90% per delegate!
+_If you like this dashboard, please consider to vote for all the Dutch Pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and "thamar" and receive the high sharing percentage of 90% per delegate!
 
 If you are curious and want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
 
@@ -59,7 +59,7 @@ Example config.json:
   "crunch_history": false,
   "logfile": "cdashboard.json",
   "coins": {
-    "OXY Dutchpool Mainnet": {
+    "OXY Dutch Pool Mainnet": {
       "coin": "OXY",
       "node": "https://wallet.oxycoin.io",
       "pubaddress": "15957132064002739627X",
@@ -139,7 +139,7 @@ We are planning to integrate other cool features:
 
 ## Donations
 
-Besides voting voor de dutch_pool delegates, if you like this Dpos crypto dashboard and it helps you to get organized, we would greatly appreciate if you would consider to show some support by donating to one of the below mentioned addresses.
+Besides voting voor de Dutch Pool delegates, if you like this Dpos crypto dashboard and it helps you to get organized, we would greatly appreciate if you would consider to show some support by donating to one of the below mentioned addresses.
 
 - OXY: 		902564290011692795X
 - LWF: 		2526916071607963001LWF
@@ -157,7 +157,7 @@ Besides voting voor de dutch_pool delegates, if you like this Dpos crypto dashbo
 ## License
 
 ```
-Copyright (c) 2018 Thamar proud member of dutch_pool
+Copyright (c) 2018 Thamar proud member of Dutch Pool
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
