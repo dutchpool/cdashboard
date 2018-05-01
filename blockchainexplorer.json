@@ -1,0 +1,17 @@
+{
+  "blockchainexplorer_jsonfile_version": 0.6,
+  "explorer": {
+    "bitcoin blockchain": {
+      "exploreraddress": "https://blockchain.info",
+      "api-getbalance": "/q/addressbalance/<address>",
+      "outputvaluesatoshi": "true"
+    },
+    "ether blockchain": {
+      "exploreraddress": "https://api.ethplorer.io",
+      "api-getbalance": "/getAddressInfo/<address>?apiKey=freekey",
+      "1-json-eth": "ETH",
+      "2-json-eth-balance": "balance",
+      "outputvaluesatoshi": "false"
+    }
+  }
+}
