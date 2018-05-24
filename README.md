@@ -32,11 +32,11 @@ First clone the crypto dashboard repository, install python and requests:
 
 ## Configure it
 
-To configure the Dashboard we need to open the config.json. With this install you get an example config.json ("config_example.json") which you need to copy and change with your own parameters and coin basic information.
+To configure the Dashboard we need to fill in the configuration file. With this install you get an example json config_example.json with a lot of examples and a file "config_template.json" which you can use as the config.json and change with your own parameters and coin basic information. To prepare this: 
 
 ```cp config_template.json config.json```
 
-Note: Never fill in your private keys, the crypto dashboard doesn't need those, we only work with public addresses!!!
+Note: Never fill in your private keys, the crypto dashboard doesnt need those, we only work with public addresses!!!
 
 The parameters:
 - cryptodashboard_file_version: internal check if version is correct for updates
@@ -46,10 +46,10 @@ The parameters:
    - identifier: coin identifier, can be any random name, can hold white spaces, but I suggest to keep it short
       - coin: coin name
       - node: DPoS coin node web address (only for the DPoS coins)
-      - pubaddress: the public address of the coin (never add your private address!!!)
+      - pubaddress: the public address of the coins wallet (never add your private address/seeds!!!)
       - cointype: options are: dpos_delegate, dpos_private, masternode, pos_staking and wallet
          - currently, dpos_delegate is the first section of the dashboard; second section: dpos_private, masternode, pos_staking; third section: crypto wallets like BTC, ETC etc.. If you want to change this, you can do this in the case-statement in the app.js.
-      - exploreraddress: coin explorer web address (for all the cointypes, if the format of the DPoS coin for the explorer address is wallet.oxyxoin.xx; wallet will be replaced internally with explorer and you don't have to fill in the explorer parameter)
+      - exploreraddress: coin explorer web address (for all the cointypes, if the format of the DPoS coin for the explorer address is wallet.something_coin.xx; wallet will be replaced internally with explorer and you don't have to fill in the explorer parameter)
       - share_perc: if you want you can fill in your Delegate sharing percentage, it will be shown next to the percentage which is retrieved from the Dutch Pool verifier, if available. 
          - output values can be: 
             - forg? : delegate is not forging
@@ -100,12 +100,15 @@ or if you want to use another config file:
 ```python3 cryptodashboard.py -c config2.json```
 
 It produces a file (if default) "cdashboard.json" with all the crypto dashboard information which can be presented with the included HTML setup. Tip: the 24h information will not show immediately.
-You have to copy the "cdashboard.json" file to the /docs folder to let the website have access to the coin information. 
 
-We advise to run the cryptodashboard script every hour to collect it's data. The cronjob to configure this (use crontab -e):
+You have to copy the "cdashboard.json" file to the /docs folder to let the website have access to the gathered coin information. 
 
-`00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py
-10 * * * * cd ~/cdashboard && cp cdashboard.json docs/cdashboard.json`
+We advise to run the cryptodashboard python script every hour to collect it's data. The cronjob to configure this (use crontab -e):
+
+```
+00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py
+10 * * * * cd ~/cdashboard && cp cdashboard.json docs/cdashboard.json
+```
 
 You can also create a bash script with the above information if you prefer.
 When the cdashboard script is ready and configured; you can setup the web environment to show the dashboard, see the setup file "cdashboard_site_setup.md".
@@ -128,7 +131,7 @@ optional arguments:
 
 At the moment CryptDashboard supports and is tested on the following chains / explorers:
 - DPoS:  OXY, LWF, ONZ, LISK, ARK, SHIFT, RISE, RipaEx
-- all clones of Iquidus Explorer
+- Crypto wallets: all clones of Iquidus Explorer
 
 Known issues:
 - a lot of explorer chains are not supported yet; working on it!
