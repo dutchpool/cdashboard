@@ -3,7 +3,7 @@
 [![docs](https://img.shields.io/badge/doc-online-blue.svg)](https://github.com/dutchpool/cdashboard/wiki)
 
 
-Dashboard for DPoS delegate information, DPoS private adresses, Masternodes status, staking info and crypto Wallets
+Dashboard for DPoS delegate information, DPoS private addresses, Masternodes status, staking info and crypto Wallets.
 
 An overview of all your important DPoS delegate information e.g. Rank, Amount of coins, Approval, Number of Votes and the difference of the last 24h. 
 Also Masternode information, like when you receive the last amount of coins in your MN wallet. The same for Staking coins, last but not least, just crypto Wallets, like Bitcoin and Etherum!
@@ -14,7 +14,7 @@ If you like this dashboard, please consider to vote for all the Dutch Pool deleg
 
 If you want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
 
-More info about Dutch Pool, our mission, our other tools and contributions to the DPoS ecosystem, please visit http://dutchpool.io_
+_More info about Dutch Pool, our mission, our other tools and contributions to the DPoS ecosystem, please visit http://dutchpool.io_
 
 
 ## Installing it
@@ -104,9 +104,8 @@ You have to copy the "cdashboard.json" file to the /docs folder to let the websi
 
 We advise to run the cryptodashboard script every hour to collect it's data. The cronjob to configure this (use crontab -e):
 
-`00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py`
-
-`10 * * * * cd ~/cdashboard && cp cdashboard.json docs/cdashboard.json`
+`00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py
+10 * * * * cd ~/cdashboard && cp cdashboard.json docs/cdashboard.json`
 
 You can also create a bash script with the above information if you prefer.
 When the cdashboard script is ready and configured; you can setup the web environment to show the dashboard, see the setup file "cdashboard_site_setup.md".
