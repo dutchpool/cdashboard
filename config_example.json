@@ -7,9 +7,9 @@
       "coin": "XPX",
       "node": "http://178.62.240.12:5500",
       "pubaddress": "PAYojNKxHEf2vCbGMd7UKMxFSRiv1eMbZ1",
-      "cointype": "dpos_delegate"
+      "cointype": "dpos_delegate",
       "exploreraddress": "https://ripa-exp.geops.net",
-      "share_perc": "90",
+      "share_perc": "90"
 	},
     "Ark random delegate Mainnet": {
       "coin": "ARK",
