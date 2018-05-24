@@ -1,0 +1,22 @@
+{
+  "cryptodashboard_file_version": 0.8,
+  "crunch_history": true,
+  "logfile": "cdashboard.json",
+  "coins": {
+    "Ark random delegate Mainnet": {
+      "coin": "ARK",
+      "node": "http://54.37.225.112:4001",
+      "pubaddress": "ARKfan7iMEK3cn8QDWVzcKdCCpL4MkASHb",
+      "exploreraddress": "https://explorer.ark.io",
+      "share_perc": "90",
+      "cointype": "dpos_delegate"
+    },
+    "Whisper - staking coin - Nr 100": {
+      "coin": "Whisper",
+      "node": "",
+      "pubaddress": "Wgb7jdVvYmzMLhcVLPM1XiUnF3BznjXyqB",
+      "exploreraddress": "https://explorer.wispr.tech/ext/getbalance/",
+      "cointype": "pos_staking"
+    }
+  }
+}

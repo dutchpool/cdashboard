@@ -1,32 +1,58 @@
 {
-  "cryptodashboard_file_version": 0.6,
-  "crunch_history": false,
-  "logfile": "cdashboard.json",
+  "cryptodashboard_file_version": 0.8,
+  "crunch_history": true,
+  "logfile": "cdashboard_example.json",
   "coins": {
-      "BitcoinWallet - mijn address": {
+    "xpxthamarmainnet": {
+      "coin": "XPX",
+      "node": "http://178.62.240.12:5500",
+      "pubaddress": "PAYojNKxHEf2vCbGMd7UKMxFSRiv1eMbZ1",
+      "cointype": "dpos_delegate"
+      "exploreraddress": "https://ripa-exp.geops.net",
+      "share_perc": "90",
+	},
+    "Ark random delegate Mainnet": {
+      "coin": "ARK",
+      "node": "http://54.37.225.112:4001",
+      "pubaddress": "ARKfan7iMEK3cn8QDWVzcKdCCpL4MkASHb",
+      "exploreraddress": "https://explorer.ark.io",
+      "share_perc": "?",
+      "cointype": "dpos_delegate"
+    },
+    "ONZ Dutchpool Mainnet": {
+      "coin": "ONZ",
+      "node": "https://node10.onzcoin.com",
+      "pubaddress": "ONZkL6Jm1MKGWnVzMzkJ8jwTxbQ8Cudqh1Hw",
+      "exploreraddress": "https://explorer.onzcoin.com",
+      "share_perc": "90",
+      "cointype": "dpos_delegate"
+    },
+    "Zencash wallet": {
+      "coin": "ZEN",
+      "node": "",
+      "pubaddress": "zncm4DDYUYmaSJjct7jY3vfTDCg6qsvmTbb",
+      "exploreraddress": "https://explorer.zensystem.io/",
+      "cointype": "wallet"
+    },
+    "BitcoinWallet - random address": {
       "coin": "BTC",
       "node": "",
-      "pubaddress": "1A5GskpW4xy6dRJECUVQzJR1cts3PZbDod",
+      "pubaddress": "3BMEXezgDMZMxnbSBNwDoyMvjUAxQxmXg4",
       "exploreraddress": "https://blockchain.info/q/addressbalance/",
       "cointype": "wallet"
     },
-    "Ether - mijn address": {
+    "Ether - random address": {
       "coin": "ETH",
       "node": "",
-      "pubaddress": "0xd4F1bb30492cc99abA03dFdb82555492c0de4678",
-      "exploreraddress": "https://api.ethplorer.io/",
+      "pubaddress": "0x3DfE875593c2EbAd487B9bB73824260F3C239C4a",
+      "exploreraddress": "https://api.ethplorer.io",
       "cointype": "wallet"
     },
     "OXY Dutchpool Mainnet": {
       "coin": "OXY",
       "node": "https://wallet.oxycoin.io",
       "pubaddress": "15957132064002739627X",
-      "cointype": "dpos_delegate"
-    },
-    "Rise random delegate Mainnet": {
-      "coin": "Rise",
-      "node": "https://wallet.rise.vision",
-      "pubaddress": "3511748430431975976R",
+      "share_perc": "90",
       "cointype": "dpos_delegate"
     },
     "Rise random private wallet": {
@@ -40,12 +66,6 @@
       "node": "https://wallet.oxycoin.io",
       "pubaddress": "3137788680851415743X",
       "cointype": "dpos_private"
-    },
-    "ONZ Dutchpool Mainnet": {
-      "coin": "ONZ",
-      "node": "https://node10.onzcoin.com",
-      "pubaddress": "ONZkL6Jm1MKGWnVzMzkJ8jwTxbQ8Cudqh1Hw",
-      "cointype": "dpos_delegate"
     },
     "LWF Dutchpool Mainnet": {
       "coin": "LWF",
@@ -65,13 +85,7 @@
       "pubaddress": "929480631438194624S",
       "cointype": "dpos_delegate"
     },
-    "Ark random delegate Mainnet": {
-      "coin": "ARK",
-      "node": "http://54.37.225.112:4001",
-      "pubaddress": "ARKfan7iMEK3cn8QDWVzcKdCCpL4MkASHb",
-      "cointype": "dpos_delegate"
-    },
-    "LWF Thamar Testnet": {
+    "LWF Testnet node": {
       "coin": "LWF",
       "node": "https://twallet.lwf.io",
       "pubaddress": "401197032093586591LWF",
@@ -97,13 +111,6 @@
       "exploreraddress": "http://explorer.innovacoin.info/ext/getbalance/",
       "cointype": "masternode"
     },
-    "Qbic-masternode": {
-      "coin": "Qbic",
-      "node": "",
-      "pubaddress": "GXiTWiLmHDGg3yof6zkmJkRMhjVBMtHHTN",
-      "exploreraddress": "http://139.59.131.248:3001/ext/getbalance/",
-      "cointype": "masternode"
-    },
     "Xuez - random masternode": {
       "coin": "Xuez",
       "node": "",
@@ -111,7 +118,7 @@
       "exploreraddress": "http://xuez.donkeypool.com/ext/getbalance/",
       "cointype": "masternode"
     },
-    "Whisper - staking - Nr 100": {
+    "Whisper - staking coin - Nr 100": {
       "coin": "Whisper",
       "node": "",
       "pubaddress": "Wgb7jdVvYmzMLhcVLPM1XiUnF3BznjXyqB",

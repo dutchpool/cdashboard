@@ -76,6 +76,35 @@ def get_node_url(url):
 
 
 ##############################################################################3
+# get_actual_share_perc
+# http: // verifier.dutchpool.io / oxy / report.json
+# http: // verifier.dutchpool.io / lwf / report.json
+# http: // verifier.dutchpool.io / shift / report.json
+# forg? = not forging?
+# n.a. = not available / wrong verifier link
+
+def get_actual_share_perc(delegatename, coinname):
+
+    verifierbaseurl = 'http://verifier.dutchpool.io/' + coinname.lower() + "/report.json"
+    verified_sharing_perc = "forg?"
+    try:
+        response = requests.get(verifierbaseurl)
+        if response.status_code == 200:
+            response_json = response.json()
+            for item in response_json["delegates"]:
+                if item["name"] == delegatename:
+                    verified_sharing_perc = item["percentage"]
+                    break
+            return str(verified_sharing_perc)
+        else:
+            print("Error: " + verifierbaseurl + ' ' + str(response.status_code) + ', response not 200')
+            return "n.a."
+    except:
+            print("Error: url is probably not correct: " + verifierbaseurl)
+            return "n.a."
+
+
+##############################################################################3
 # get_walletbalance
 # This function expects an url which is complete and  returns only one number, the balance!
 # most API's have two ways to show balance's: a complete website or explicit values of the address.
@@ -99,10 +128,10 @@ def get_node_url(url):
 def get_walletbalance(url, address):
 
     walletbalance_exploreraddress = url + address
-    returnfloatdevide = 1
     # get the base_url of the url which is provided
     from urllib.parse import urlsplit
     base_url = get_node_url("{0.scheme}://{0.netloc}/".format(urlsplit(url)))
+    returnfloatdevide = 1
 
     for explorer in blockchainexplorerdb["explorer"]:
         if blockchainexplorerdb["explorer"][explorer]["exploreraddress"] == base_url:
@@ -121,6 +150,9 @@ def get_walletbalance(url, address):
                 j1 = blockchainexplorerdb["explorer"]["ether blockchain"]["1-json-eth"]
                 j2 = blockchainexplorerdb["explorer"]["ether blockchain"]["2-json-eth-balance"]
                 response_json_value = response_json[j1][j2]
+            elif base_url == "https://explorer.zensystem.io":
+                j1 = blockchainexplorerdb["explorer"]["zencash blockchain"]["json-level-1"]
+                response_json_value = response_json[j1]
             else:
                 response_json_value = response_json
 
@@ -248,6 +280,7 @@ def dashboard():
     from urllib.parse import urlsplit
     from datetime import datetime
     from operator import itemgetter
+    import copy
 
     # read the json, this is the database of the dashbaord
     coininfo_output = loadLog()
@@ -261,6 +294,8 @@ def dashboard():
 
     for item in conf["coins"]:
         coinitemexists = 0
+        coin_explorerlink = ""
+        share_perc = 0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
@@ -268,7 +303,9 @@ def dashboard():
         # Section: dpos_delegate and dpos_private
         if conf["coins"][item]["cointype"] == "dpos_delegate" or conf["coins"][item]["cointype"] == "dpos_private":
             coin_nodeurl = get_node_url(conf["coins"][item]["node"])
-            coin_explorerlink = coin_nodeurl.replace("wallet", "explorer")
+            coin_explorerlink = copy.copy(conf["coins"][item].get("exploreraddress"))
+            if coin_explorerlink == None:
+                coin_explorerlink = copy.copy(coin_nodeurl.replace("wallet", "explorer"))
 
             # get the public key of this address
             coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
@@ -299,7 +336,8 @@ def dashboard():
                 # todo get the next forger: niet in dit bestand!
                 # https://explorer.oxycoin.io/api/delegates/getNextForgers
                 # https://wallet.oxycoin.io/api/delegates/getNextForgers?limit=201
-
+                if conf["coins"][item]["cointype"] == "dpos_delegate":
+                    share_perc = conf["coins"][item].get("share_perc")
 
                 # check if item/coin already excists? If not, add coin to the output list
                 if coinitemexists != 1:
@@ -308,9 +346,14 @@ def dashboard():
                         "cointype": conf["coins"][item]["cointype"],
                         "delegatename": "",
                         "explink": coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"],
+                        "share_perc": share_perc,
                         "history": []
                     }
-
+                else:
+                    # these items can change now and then by the user...
+                    coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
+                    coininfo_output["coins"][item]["share_perc"] = share_perc
+                bla = 1
                 # generic variable coin info
                 coininfo_tocheck = {
                     "timestamp": timestamp,
@@ -319,7 +362,8 @@ def dashboard():
                     "timereceived": timereceived,
                     "rank": 0,
                     "approval": 0,
-                    "nrofvoters": 0
+                    "nrofvoters": 0,
+                    "actual_share_perc": 0
                 }
 
                 # Specific delegate Dpos coin info
@@ -328,6 +372,7 @@ def dashboard():
                     coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
                     coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
                     coininfo_tocheck["nrofvoters"] = nrofvoters
+                    coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"] )
 
                 # archive the coin info:
                 # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
@@ -351,14 +396,14 @@ def dashboard():
 
                     if coininfohistory["timestamp"] <= timestamp24hpast:
                         rankdelta24h = coininfohistory["rank"] - coininfo_tocheck["rank"]
-                        coininfo_tocheck["rankdelta24h"] = rankdelta24h
+                        coininfo_output["coins"][item]["rankdelta24h"] = rankdelta24h
                         votersdelta24h = coininfo_tocheck["nrofvoters"] - coininfohistory["nrofvoters"]
-                        coininfo_tocheck["nrofvoters24h"] = votersdelta24h
+                        coininfo_output["coins"][item]["nrofvoters24h"] = votersdelta24h
                         totalbalancedelta24h = coininfo_tocheck["totalbalance"] - coininfohistory["totalbalance"]
-                        coininfo_tocheck["totalbalancedelta24h"] = totalbalancedelta24h
+                        coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                         break
 
-                coininfo_output["coins"][item].update(coininfo_tocheck)
+                # coininfo_output["coins"][item].update(coininfo_tocheck)
 
                 print(coininfo_output["coins"][item])
 
@@ -370,6 +415,10 @@ def dashboard():
 
             # get the base_url of the url which is provided
             base_url = "{0.scheme}://{0.netloc}/".format(urlsplit(conf["coins"][item]["exploreraddress"]))
+
+            coin_explorerlink = copy.copy(conf["coins"][item].get("exploreraddress"))
+            if coin_explorerlink == None:
+                coin_explorerlink = copy.copy(coin_nodeurl.replace("wallet", "explorer"))
 
             if coinitemexists != 1:
                 coininfo_output["coins"][item] = {
@@ -405,15 +454,15 @@ def dashboard():
             coininfo_output["coins"][item]["history"].sort(key=lambda x:x["timestamp"], reverse=True)
             for coininfohistory in coininfo_output["coins"][item]["history"]:
                 timestamp24hpast = int(time.time()) - 23 * 60 * 59
-                # coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
-                # timestamp24hpast_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp24hpast))
+                coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
+                timestamp24hpast_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp24hpast))
 
                 if coininfohistory["timestamp"] <= timestamp24hpast:
                     totalbalancedelta24h = coininfo_tocheck["totalbalance"] - coininfohistory["totalbalance"]
-                    coininfo_tocheck["totalbalancedelta24h"] = totalbalancedelta24h
+                    coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                     break
 
-            coininfo_output["coins"][item].update(coininfo_tocheck)
+            # coininfo_output["coins"][item].update(coininfo_tocheck)
 
             print(coininfo_output["coins"][item])
         else:
@@ -426,20 +475,12 @@ def logcruncher():
     # read the json, this is the database of the dashbaord
     coininfo_crunched = coininfo_tocrunch = loadLog()
 
-    # calculate the variables
     # Hisotry crunching starts after 48 hour
-    daytime = 48 * 60 * 60
-    weektime = 7 * daytime
-    monthtime = 4 * weektime
-
+    daytime = 24 * 60 * 60
     currenttime = int(time.time())
 
-    debugthis = 0
-  #  if debugthis == 1:
-    # 21 april 2018
- #       currenttime = 1524268800
-
     today_timestamp_readable = time.strftime("%Y-%m-%d", time.localtime(int(currenttime)))
+    yesterday_timestamp_readable = time.strftime("%Y-%m-%d", time.localtime(int(currenttime) - daytime))
 
     # for every coin, crunch the history
     for item in conf["coins"]:
@@ -448,49 +489,41 @@ def logcruncher():
         coininfohistory = sorted(coininfo_tocrunch["coins"][item]["history"], key=lambda k: ("timestamp" not in k, k.get("timestamp", None)), reverse=True)
         coin_daytimestamparray_readable = []
         coinhisroytitem_temp = {
-
             "history": []
         }
 
         for coinhisroytitem in coininfohistory:
-            # between < 1 day every hour needs 1 entry
+            # When history < 2 days (48 hours):  every hour needs 1 entry
             # after this 1 day is 1 entry in the log
 
             coin_timestamp_readable = time.strftime("%Y-%m-%d", time.localtime(int(coinhisroytitem["timestamp"])))
 
-            # If coin timestamp is from today; add them all
-            if coin_timestamp_readable == today_timestamp_readable:
-                if debugthis == 1:
-                    coinhisroytitem["timestamp_readable"] = coin_timestamp_readable
+            # If coin_timestamp is from today; add them all
+            if coin_timestamp_readable == today_timestamp_readable or coin_timestamp_readable == yesterday_timestamp_readable:
                 coinhisroytitem_temp["history"].append(coinhisroytitem)
 
 
-            # If coin timestamp is from today -1 day; add only the first and skip the rest
-            if pasttime - daytime >= coinhisroytitem["timestamp"]:
+            # If coin timestamp is not from today or yesterday; add only the first of a certain date and skip the rest of dat date
+            elif pasttime - 2*daytime >= coinhisroytitem["timestamp"]:
                 if coin_timestamp_readable not in coin_daytimestamparray_readable:
-                    if debugthis == 1:
-                        coinhisroytitem["timestamp_readable"] = coin_timestamp_readable
                     coinhisroytitem_temp["history"].append(coinhisroytitem)
 
                     # add this timestamp to the compare array -  we don't need another sample for this date!
                     coin_daytimestamparray_readable.append(time.strftime("%Y-%m-%d", time.localtime(int(coinhisroytitem["timestamp"]))))
 
         coininfo_crunched["coins"][item]["history"] = coinhisroytitem_temp["history"].copy()
-
-    if debugthis == 1:
-        print(coininfo_crunched)
-        savelog(coininfo_crunched, "test_" + LOGFILE)
-    else:
         savelog(coininfo_crunched, LOGFILE)
 
 #########################################################
 # Todo
 # 1. implement in the HTML the periode to look back from a dropdown; looks like: https://plnkr.co/edit/mig31CiYgHX3iH9DI6Wc?p=preview
 
+    # History weghalen van coins uit de log die uit de config.json zijn verwijderd
+    # Alle links naar de adressen checken, Ark Onz werken niet!
+    # Van Dpos private adressen: bepalen hoeveel er nog forgen en welke niet (pop-up?) …
 
 
 if __name__ == "__main__":
-    dashboard()
-#    Todo!!! reduce/rotate log function
-#     if conf["crunch_history"]:
-#         logcruncher()
+     dashboard()
+     if conf["crunch_history"]:
+         logcruncher()

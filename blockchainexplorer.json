@@ -1,10 +1,16 @@
 {
-  "blockchainexplorer_jsonfile_version": 0.6,
+  "blockchainexplorer_jsonfile_version": 0.8,
   "explorer": {
     "bitcoin blockchain": {
       "exploreraddress": "https://blockchain.info",
       "api-getbalance": "/q/addressbalance/<address>",
       "outputvaluesatoshi": "true"
+    },
+    "zencash blockchain": {
+      "exploreraddress": "https://explorer.zensystem.io",
+      "api-getbalance": "/insight-api-zen/addr/<address>",
+      "json-level-1": "balance",
+      "outputvaluesatoshi": "false"
     },
     "ether blockchain": {
       "exploreraddress": "https://api.ethplorer.io",
