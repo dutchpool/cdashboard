@@ -105,6 +105,7 @@ You have to copy the "cdashboard.json" file to the /docs folder to let the websi
 We advise to run the cryptodashboard script every hour to collect it's data. The cronjob to configure this (use crontab -e):
 
 `00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py`
+
 `10 * * * * cd ~/cdashboard && cp cdashboard.json docs/cdashboard.json`
 
 You can also create a bash script with the above information if you prefer.
