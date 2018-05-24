@@ -54,7 +54,7 @@ def loadLog():
         data = json.load(open(LOGFILE, 'r'))
     except:
         data = {
-            "cryptodashboard_file_version": 0.6,
+            "cryptodashboard_file_version": 0.8,
             "lasttimecalculated": 0,
             "coins": {}
         }
@@ -403,7 +403,7 @@ def dashboard():
                         coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                         break
 
-                # coininfo_output["coins"][item].update(coininfo_tocheck)
+                coininfo_output["coins"][item].update(coininfo_tocheck)
 
                 print(coininfo_output["coins"][item])
 
@@ -462,7 +462,7 @@ def dashboard():
                     coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                     break
 
-            # coininfo_output["coins"][item].update(coininfo_tocheck)
+            coininfo_output["coins"][item].update(coininfo_tocheck)
 
             print(coininfo_output["coins"][item])
         else:
