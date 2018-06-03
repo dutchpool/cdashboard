@@ -256,6 +256,11 @@ def get_dpos_api_info(node_url, address, api_info):
             request_url = node_url + '/api/transactions?limit=1&recipientId=' + address + '&orderBy=timestamp:desc'
         elif api_info == "epoch":
             request_url = node_url + '/api/blocks/getEpoch'
+        elif api_info == "delegates":
+            if address == "":
+                request_url = node_url + '/api/delegates'
+            else:
+                request_url = node_url + '/api/accounts/delegates/?address=' + address
         else:
             return 0
 
@@ -276,6 +281,33 @@ def get_dpos_api_info(node_url, address, api_info):
                 return 0
 
 
+##############################################################################3
+# get_dpos_private_vote_info
+# specific for Dpos private addresses (if you mark your Delegate Address also a second time as private
+# If you vote delegates, you want to keep track if they are still in forging position, besides the % they pay!
+# This function checks the known DPoS systems in combination of the private DPoS Wallet address and its votes on Delegates
+#
+# OXY
+#
+# load all the forging delegates
+#
+# function returns 2 values
+#   1. the total number of votes a DPoS address in this ecosystem can cast
+#   2. a list of names of delegates who are currently not forging (togehter with the current forging spot)
+#
+def get_dpos_private_vote_info(coin_nodeurl, address):
+    amount_forging_delegates = len(get_dpos_api_info(coin_nodeurl, "", "delegates"))
+    private_delegate_vote_info = get_dpos_api_info(coin_nodeurl, address, "delegates")
+
+    # create a dict for the not forging names
+    notforgingdelegates = {}
+    for item in private_delegate_vote_info:
+        if item["rate"] > amount_forging_delegates:
+                notforgingdelegates[item["username"]] = item["rate"]
+    return len(private_delegate_vote_info), notforgingdelegates
+
+
+
 def dashboard():
     from urllib.parse import urlsplit
     from datetime import datetime
@@ -285,7 +317,6 @@ def dashboard():
     # read the json, this is the database of the dashbaord
     coininfo_output = loadLog()
 
-    coin_explorerlink = ""
     # Update last time the cryptodashboard has run
     coininfo_output['lasttimecalculated'] = int(time.time())
     timestamp = coininfo_output['lasttimecalculated']
@@ -321,8 +352,11 @@ def dashboard():
                 # get number of voters
                 nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
 
+                # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
+                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
+
                 # get last transaction
-                transactions = (get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions"))
+                transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
                 if transactions != 0:
                     amountreceived = transactions[0]["amount"] / 100000000
 
@@ -333,13 +367,13 @@ def dashboard():
                     timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
 
 
-                # todo get the next forger: niet in dit bestand!
+                # todo get the next forger: not here, probably in a more faster updated cycle!
                 # https://explorer.oxycoin.io/api/delegates/getNextForgers
                 # https://wallet.oxycoin.io/api/delegates/getNextForgers?limit=201
                 if conf["coins"][item]["cointype"] == "dpos_delegate":
                     share_perc = conf["coins"][item].get("share_perc")
 
-                # check if item/coin already excists? If not, add coin to the output list
+                # check if item/coin already exists? If not, add coin to the output list
                 if coinitemexists != 1:
                     coininfo_output["coins"][item] = {
                         "coin": conf["coins"][item]["coin"],
@@ -347,13 +381,16 @@ def dashboard():
                         "delegatename": "",
                         "explink": coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"],
                         "share_perc": share_perc,
+                        "nrofvotescasted": 0,
+                        "nrofnotforingdelegates": 0,
+                        "notforgingdelegates": {},
                         "history": []
                     }
                 else:
                     # these items can change now and then by the user...
                     coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
                     coininfo_output["coins"][item]["share_perc"] = share_perc
-                bla = 1
+
                 # generic variable coin info
                 coininfo_tocheck = {
                     "timestamp": timestamp,
@@ -363,7 +400,7 @@ def dashboard():
                     "rank": 0,
                     "approval": 0,
                     "nrofvoters": 0,
-                    "actual_share_perc": 0
+                    "actual_share_perc": 0,
                 }
 
                 # Specific delegate Dpos coin info
@@ -372,7 +409,11 @@ def dashboard():
                     coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
                     coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
                     coininfo_tocheck["nrofvoters"] = nrofvoters
-                    coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"] )
+                    coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
+
+                coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
+                coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
+                coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
 
                 # archive the coin info:
                 # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)

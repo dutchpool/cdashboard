@@ -34,7 +34,7 @@ First clone the crypto dashboard repository, install python and requests:
 
 To configure the Dashboard we need to fill in the configuration file. With this install you get an example json config_example.json with a lot of examples and a file "config_template.json" which you can use as the config.json and change with your own parameters and coin basic information. To prepare this: 
 
-```cp config_template.json config.json```
+```cp config_emptytemplate.json config.json```
 
 Note: Never fill in your private keys, the crypto dashboard doesnt need those, we only work with public addresses!!!
 
@@ -139,6 +139,10 @@ Known issues:
 
 ## Changelog
 
+###### Release 0.9
+New feature:
+- check your DPoS (private) addresses, if all your voted delegates are still forging
+
 ###### Release 0.8
 - Bugfix and feature release
 	- Log cruncher is working!
@@ -152,7 +156,6 @@ Known issues:
 
 ## To Do
 We are planning to integrate other cool features:
-- check your DPoS private addresses, if all your voted delegates are still forging ;-); 
 - in the HTML overview, select the history period with a dropdown, now it is 24h and 48h;
 - add a live indication in the DPoS main dashboard, the time until a node will forge
 - add euro / dollar for amount of coins - If already possible! Not main focus currently
