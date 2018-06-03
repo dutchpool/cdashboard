@@ -301,9 +301,18 @@ def get_dpos_private_vote_info(coin_nodeurl, address):
 
     # create a dict for the not forging names
     notforgingdelegates = {}
+
+
     for item in private_delegate_vote_info:
-        if item["rate"] > amount_forging_delegates:
-                notforgingdelegates[item["username"]] = item["rate"]
+        if "rank" in item:
+            rate = "rank"
+        elif "rate" in item:
+            rate = "rate"
+        else:
+            return len(private_delegate_vote_info), notforgingdelegates
+
+        if item[rate] > amount_forging_delegates:
+                notforgingdelegates[item["username"]] = item[rate]
     return len(private_delegate_vote_info), notforgingdelegates
 
 
