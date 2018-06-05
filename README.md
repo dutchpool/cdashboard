@@ -139,9 +139,11 @@ Known issues:
 
 ## Changelog
 
-###### Release 0.9
+###### Release 0.9/0.91
 New feature:
-- check your DPoS (private) addresses, if all your voted delegates are still forging
+- check your DPoS (private) addresses, if all your voted delegates are still forging!
+- fixed some bugs for addresses which are brand new with no transactions jet.
+- known issue: the pop-up only should show info from the coin which was selected; currently it shows all the coins.
 
 ###### Release 0.8
 - Bugfix and feature release
@@ -156,6 +158,7 @@ New feature:
 
 ## To Do
 We are planning to integrate other cool features:
+- show the voted delegates of one wallet with their percentages that they are paying in the pop-up 
 - in the HTML overview, select the history period with a dropdown, now it is 24h and 48h;
 - add a live indication in the DPoS main dashboard, the time until a node will forge
 - add euro / dollar for amount of coins - If already possible! Not main focus currently

@@ -1,5 +1,5 @@
 {
-  "cryptodashboard_file_version": 0.8,
+  "cryptodashboard_file_version": 0.91,
   "crunch_history": true,
   "logfile": "cdashboard.json",
   "coins": {

@@ -34,7 +34,7 @@
 <body ng-app="dashboardApp" ng-controller="indexCtrl">
 
 <div class="container">
-    <h3>Dutch Pool - DPoS-Masternode-Staking-Wallets Dashboard (v0.9 beta)</h3>
+    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.91) by Dutch Pool</h4>
     <div class="alert alert-info" role="alert">Dashboard updated: {{lastupdate|date:'medium'}}</div>
 
     <ul class="nav nav-tabs">
@@ -171,7 +171,7 @@
                             <th><a href="#" ng-click="orderByField='address'; reverseSort = !reverseSort">Identifier</a></th>
                             <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin</a></th>
                             <th><a href="#" ng-click="orderByField='delegatename'; reverseSort = !reverseSort">Delegate</a></th>
-                            <th>History (last 24hour; in json is more history) <BR>Timestamp | Rank | # coins | Approval (%) | Votes</th>
+                            <th>History (last 24hour; in json is more history) <BR>Timestamp | Rank | coins | Approval(%) | Votes | act share%</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -184,9 +184,11 @@
                                     <li ng-repeat="history in (acc.history|orderBy:'-timestamp')" ng-if="(CurrentDate/1000 - 2400*60*60) <= history.timestamp">
                                         {{history.timestamp * 1000 |date:'dd-MM-yy HH:mm'}} |
                                         rank: {{history.rank}} |
-                                        #coins: {{history.totalbalance|number:0}} |
-                                        approval: {{history.approval|number:1}} % |
-                                        #voters: {{history.nrofvoters}}</li>
+                                        coins: {{history.totalbalance|number:0}} |
+                                        apprl: {{history.approval|number:1}} % |
+                                        voters: {{history.nrofvoters}} |
+                                        share%: {{history.actual_share_perc}}
+                                    </li>
                                 </ul>
                             </td>
                         </tr>
@@ -311,7 +313,7 @@
       <h4>About</h4>
       <p>
         <h2>CDashboard - DPoS, Masternode and other crypto Dashboard</h2>
-        CDashboard gives you important insights in your (multiple) DPosS delegate information, Masternodes status, staking info and crypto Wallets in one overview.<BR>
+        CDashboard gives you important insights in your (multiple) DPoS delegate information, Masternodes status, staking info and crypto Wallets in one overview.<BR>
         <BR>
         An overview of all your important DPoS delegate information like: rank, amount of coins, approval and votes, including a 24h change indication with history.<BR>
         <BR>
@@ -367,7 +369,7 @@
                         <tr>
                             <th><a href="#" ng-click="orderByField='address'; reverseSort = !reverseSort">DPos identifier</a></th>
                             <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin</a></th>
-                            <th>Which voted delegate is not forging</th>
+                            <th>Which voted delegate is not forging?!</th>
                         </tr>
                     </thead>
 
@@ -379,7 +381,7 @@
                                 <ul>
                                     <li ng-repeat="(key, value) in acc.notforgingdelegates" >rank: {{value}} &nbsp;&nbsp {{key}} </li>
                                 </ul>
-                            </li>
+                            </td>
                         </tr>
                         <tr ng-repeat="acc in accounts_dpos | orderBy:orderByField:reverseSort | filter:searchCoin" ng-if="acc.cointype == 'dpos_delegate'">
                             <td>{{acc.address}}</td>
@@ -388,7 +390,7 @@
                                 <ul>
                                     <li ng-repeat="(key, value) in acc.notforgingdelegates" >rank: {{value}} &nbsp;&nbsp {{key}} </li>
                                 </ul>
-                            </li>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

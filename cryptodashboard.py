@@ -54,7 +54,7 @@ def loadLog():
         data = json.load(open(LOGFILE, 'r'))
     except:
         data = {
-            "cryptodashboard_file_version": 0.8,
+            "cryptodashboard_file_version": 0.91,
             "lasttimecalculated": 0,
             "coins": {}
         }
@@ -262,7 +262,7 @@ def get_dpos_api_info(node_url, address, api_info):
             else:
                 request_url = node_url + '/api/accounts/delegates/?address=' + address
         else:
-            return 0
+            return ""
 
         try:
             response = requests.get(request_url)
@@ -272,13 +272,13 @@ def get_dpos_api_info(node_url, address, api_info):
                      return response_json[api_info]
                 else:
 #                    print(request_url + ' ' + str(response.status_code) + ' Failed to get ' + api_info)
-                    return 0
+                    return ""
             else:
                 print("Error: " + request_url + ' ' + str(response.status_code) + ', response not 200' + api_info)
-                return 0
+                return ""
         except:
                 print("Error: url is probably not correct: " + request_url)
-                return 0
+                return ""
 
 
 ##############################################################################3
@@ -336,6 +336,9 @@ def dashboard():
         coinitemexists = 0
         coin_explorerlink = ""
         share_perc = 0
+        amountreceived = 0
+        timereceived = 0
+        share_perc = 0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
@@ -350,112 +353,112 @@ def dashboard():
             # get the public key of this address
             coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
 
-            # first check if url is working, if so, I asume other calls will also work ;-)
-            if coin_pubkey:
-                # get the current balance of this address
-                balance = int(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))/100000000
+            # first check if url is working, if so, I assume other calls will also work ;-)
+            # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
 
-                # get all the delegate info
-                coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
+            # get the current balance of this address
+            balance = int(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))/100000000
 
-                # get number of voters
-                nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
+            # get all the delegate info
+            coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
 
-                # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
-                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
+            # get number of voters
+            nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
 
-                # get last transaction
-                transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
-                if transactions != 0:
-                    amountreceived = transactions[0]["amount"] / 100000000
+            # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
+            nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
 
-                    coin_epoch = get_dpos_api_info(coin_nodeurl, 0, "epoch")
-                    # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
-                    utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
-                    # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
-                    timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
+            # get last transaction
+            transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
+            if len(transactions) > 0:
+                amountreceived = transactions[0]["amount"] / 100000000
+
+                coin_epoch = get_dpos_api_info(coin_nodeurl, 0, "epoch")
+                # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
+                utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
+                # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
+                timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
 
 
-                # todo get the next forger: not here, probably in a more faster updated cycle!
-                # https://explorer.oxycoin.io/api/delegates/getNextForgers
-                # https://wallet.oxycoin.io/api/delegates/getNextForgers?limit=201
-                if conf["coins"][item]["cointype"] == "dpos_delegate":
-                    share_perc = conf["coins"][item].get("share_perc")
+            # todo get the next forger: not here, probably in a more faster updated cycle!
+            # https://explorer.oxycoin.io/api/delegates/getNextForgers
+            # https://wallet.oxycoin.io/api/delegates/getNextForgers?limit=201
+            if conf["coins"][item]["cointype"] == "dpos_delegate":
+                share_perc = conf["coins"][item].get("share_perc")
 
-                # check if item/coin already exists? If not, add coin to the output list
-                if coinitemexists != 1:
-                    coininfo_output["coins"][item] = {
-                        "coin": conf["coins"][item]["coin"],
-                        "cointype": conf["coins"][item]["cointype"],
-                        "delegatename": "",
-                        "explink": coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"],
-                        "share_perc": share_perc,
-                        "nrofvotescasted": 0,
-                        "nrofnotforingdelegates": 0,
-                        "notforgingdelegates": {},
-                        "history": []
-                    }
-                else:
-                    # these items can change now and then by the user...
-                    coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
-                    coininfo_output["coins"][item]["share_perc"] = share_perc
-
-                # generic variable coin info
-                coininfo_tocheck = {
-                    "timestamp": timestamp,
-                    "totalbalance": balance,
-                    "amountreceived": amountreceived,
-                    "timereceived": timereceived,
-                    "rank": 0,
-                    "approval": 0,
-                    "nrofvoters": 0,
-                    "actual_share_perc": 0,
+            # check if item/coin already exists? If not, add coin to the output list
+            if coinitemexists != 1:
+                coininfo_output["coins"][item] = {
+                    "coin": conf["coins"][item]["coin"],
+                    "cointype": conf["coins"][item]["cointype"],
+                    "delegatename": "",
+                    "explink": coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"],
+                    "share_perc": share_perc,
+                    "nrofvotescasted": 0,
+                    "nrofnotforingdelegates": 0,
+                    "notforgingdelegates": {},
+                    "history": []
                 }
+            else:
+                # these items can change now and then by the user...
+                coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
+                coininfo_output["coins"][item]["share_perc"] = share_perc
 
-                # Specific delegate Dpos coin info
-                if coin_delegateinfo != 0:
-                    coininfo_output["coins"][item]["delegatename"] = coin_delegateinfo["username"]
-                    coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
-                    coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
-                    coininfo_tocheck["nrofvoters"] = nrofvoters
-                    coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
+            # generic variable coin info
+            coininfo_tocheck = {
+                "timestamp": timestamp,
+                "totalbalance": balance,
+                "amountreceived": amountreceived,
+                "timereceived": timereceived,
+                "rank": 0,
+                "approval": 0,
+                "nrofvoters": 0,
+                "actual_share_perc": 0,
+            }
 
-                coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
-                coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
-                coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
+            # Specific delegate Dpos coin info
+            if coin_delegateinfo != "":
+                coininfo_output["coins"][item]["delegatename"] = coin_delegateinfo["username"]
+                coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
+                coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
+                coininfo_tocheck["nrofvoters"] = nrofvoters
+                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
-                # archive the coin info:
-                # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
-                # 2. for the overview add/overwrite the info to the current coin info.
-                coininfo_alreadypresent = 0
-                for coininfohistory in coininfo_output["coins"][item]["history"]:
-                    added, removed, modified, same = dict_compare(coininfohistory, coininfo_tocheck)
-                    if len(modified) == 1 and "timestamp" in modified:
-                        coininfo_alreadypresent = 1
-                        break
+            coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
+            coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
+            coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
 
-                if coininfo_alreadypresent == 0:
-                    coininfo_output["coins"][item]["history"].append(coininfo_tocheck)
+            # archive the coin info:
+            # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
+            # 2. for the overview add/overwrite the info to the current coin info.
+            coininfo_alreadypresent = 0
+            for coininfohistory in coininfo_output["coins"][item]["history"]:
+                added, removed, modified, same = dict_compare(coininfohistory, coininfo_tocheck)
+                if len(modified) == 1 and "timestamp" in modified:
+                    coininfo_alreadypresent = 1
+                    break
 
-                # try to figure out the 24h change of rank and nrofvoters
-                coininfo_output["coins"][item]["history"].sort(key=lambda x:x["timestamp"], reverse=True)
-                for coininfohistory in coininfo_output["coins"][item]["history"]:
-                    timestamp24hpast = int(time.time()) - 23 * 60 * 59
-                    # coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
-                    # timestamp24hpast_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp24hpast))
+            if coininfo_alreadypresent == 0:
+                coininfo_output["coins"][item]["history"].append(coininfo_tocheck)
 
-                    if coininfohistory["timestamp"] <= timestamp24hpast:
-                        rankdelta24h = coininfohistory["rank"] - coininfo_tocheck["rank"]
-                        coininfo_output["coins"][item]["rankdelta24h"] = rankdelta24h
-                        votersdelta24h = coininfo_tocheck["nrofvoters"] - coininfohistory["nrofvoters"]
-                        coininfo_output["coins"][item]["nrofvoters24h"] = votersdelta24h
-                        totalbalancedelta24h = coininfo_tocheck["totalbalance"] - coininfohistory["totalbalance"]
-                        coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
-                        break
+            # try to figure out the 24h change of rank and nrofvoters
+            coininfo_output["coins"][item]["history"].sort(key=lambda x:x["timestamp"], reverse=True)
+            for coininfohistory in coininfo_output["coins"][item]["history"]:
+                timestamp24hpast = int(time.time()) - 23 * 60 * 59
+                # coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
+                # timestamp24hpast_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp24hpast))
 
-                coininfo_output["coins"][item].update(coininfo_tocheck)
+                if coininfohistory["timestamp"] <= timestamp24hpast:
+                    rankdelta24h = coininfohistory["rank"] - coininfo_tocheck["rank"]
+                    coininfo_output["coins"][item]["rankdelta24h"] = rankdelta24h
+                    votersdelta24h = coininfo_tocheck["nrofvoters"] - coininfohistory["nrofvoters"]
+                    coininfo_output["coins"][item]["nrofvoters24h"] = votersdelta24h
+                    totalbalancedelta24h = coininfo_tocheck["totalbalance"] - coininfohistory["totalbalance"]
+                    coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
+                    break
 
-                print(coininfo_output["coins"][item])
+            coininfo_output["coins"][item].update(coininfo_tocheck)
+            print(coininfo_output["coins"][item])
 
         elif conf["coins"][item]["cointype"] == "masternode" or conf["coins"][item]["cointype"] == "pos_staking" or conf["coins"][item]["cointype"] == "wallet":
             # Section: masternode, pos_staking and wallet
@@ -533,7 +536,7 @@ def logcruncher():
     yesterday_timestamp_readable = time.strftime("%Y-%m-%d", time.localtime(int(currenttime) - daytime))
 
     # for every coin, crunch the history
-    for item in conf["coins"]:
+    for item in coininfo_tocrunch["coins"]:
 
         pasttime = currenttime
         coininfohistory = sorted(coininfo_tocrunch["coins"][item]["history"], key=lambda k: ("timestamp" not in k, k.get("timestamp", None)), reverse=True)
