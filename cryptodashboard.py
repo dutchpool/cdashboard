@@ -352,6 +352,8 @@ def dashboard():
 
             # get the public key of this address
             coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
+            if coin_pubkey == None:
+                coin_pubkey = ""
 
             # first check if url is working, if so, I assume other calls will also work ;-)
             # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
