@@ -4,6 +4,13 @@ import sys
 import time
 import argparse
 
+
+###########################################################################################
+#                                 DPoS Dashboard
+#                                 Version 0.92
+#                                 By Delegate Thamar
+###########################################################################################
+
 if sys.version_info[0] < 3:
     print('python2 not supported, please use python3')
     sys.exit()
@@ -278,6 +285,7 @@ def get_dpos_api_info(node_url, address, api_info):
                 return ""
         except:
                 print("Error: url is probably not correct: " + request_url)
+                # known case: with parameter 'delegates' and if there are no votes returned from API, this exception occurs
                 return ""
 
 
@@ -359,7 +367,7 @@ def dashboard():
             # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
 
             # get the current balance of this address
-            balance = int(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))/100000000
+            balance = int(float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
 
             # get all the delegate info
             coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
@@ -434,6 +442,7 @@ def dashboard():
             # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
             # 2. for the overview add/overwrite the info to the current coin info.
             coininfo_alreadypresent = 0
+            modified = {}
             for coininfohistory in coininfo_output["coins"][item]["history"]:
                 added, removed, modified, same = dict_compare(coininfohistory, coininfo_tocheck)
                 if len(modified) == 1 and "timestamp" in modified:
@@ -459,7 +468,9 @@ def dashboard():
                     coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                     break
 
-            coininfo_output["coins"][item].update(coininfo_tocheck)
+            if len(modified) > 1 or coininfo_alreadypresent == 0:
+                coininfo_output["coins"][item].update(coininfo_tocheck)
+
             print(coininfo_output["coins"][item])
 
         elif conf["coins"][item]["cointype"] == "masternode" or conf["coins"][item]["cointype"] == "pos_staking" or conf["coins"][item]["cointype"] == "wallet":
@@ -490,15 +501,16 @@ def dashboard():
                 "rank": "",
                 "totalbalance": balance,
                 "approval": "",
-                "nrofvoters":"",
+                "nrofvoters": "",
                 "amountreceived": amountreceived,
                 "timereceived": timereceived
             }
 
+            modified = {}
             coininfo_alreadypresent = 0
             for coininfohistory in coininfo_output["coins"][item]["history"]:
                 added, removed, modified, same = dict_compare(coininfohistory, coininfo_tocheck)
-                if len( modified ) == 1 and "timestamp" in modified:
+                if len(modified) == 1 and "timestamp" in modified:
                     coininfo_alreadypresent = 1
                     break
 
@@ -517,7 +529,8 @@ def dashboard():
                     coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
                     break
 
-            coininfo_output["coins"][item].update(coininfo_tocheck)
+            if len(modified) > 1 or coininfo_alreadypresent == 0:
+                coininfo_output["coins"][item].update(coininfo_tocheck)
 
             print(coininfo_output["coins"][item])
         else:
