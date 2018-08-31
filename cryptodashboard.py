@@ -267,7 +267,7 @@ def get_dpos_api_info(node_url, address, api_info):
             if address == "":
                 request_url = node_url + '/api/delegates'
             else:
-                request_url = node_url + '/api/accounts/delegates/?address=' + address
+                request_url = node_url + '/api/accounts/delegates?address=' + address
         else:
             return ""
 
@@ -286,7 +286,10 @@ def get_dpos_api_info(node_url, address, api_info):
         except:
                 print("Error: url is probably not correct: " + request_url)
                 # known case: with parameter 'delegates' and if there are no votes returned from API, this exception occurs
-                return ""
+                if api_info == "balance":
+                    return 0
+                else:
+                    return ""
 
 
 ##############################################################################3
@@ -367,6 +370,7 @@ def dashboard():
             # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
 
             # get the current balance of this address
+            # todo : when wrong ip addres is filled-in in pubaddress ==> catch the error!
             balance = int(float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
 
             # get all the delegate info
