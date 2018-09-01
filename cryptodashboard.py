@@ -279,9 +279,13 @@ def get_dpos_api_info(node_url, address, api_info):
                      return response_json[api_info]
                 else:
 #                    print(request_url + ' ' + str(response.status_code) + ' Failed to get ' + api_info)
+                    if api_info == "balance":
+                        return 0
                     return ""
             else:
                 print("Error: " + request_url + ' ' + str(response.status_code) + ', response not 200' + api_info)
+                if api_info == "balance":
+                    return 0
                 return ""
         except:
                 print("Error: url is probably not correct: " + request_url)
