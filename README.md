@@ -6,7 +6,7 @@
 Dashboard for DPoS delegate information, DPoS private addresses, Masternodes status, staking info and crypto Wallets.
 
 An overview of all your important DPoS delegate information e.g. Rank, Amount of coins, Approval, Number of Votes and the difference of the last 24h. 
-Also Masternode information, like when you receive the last amount of coins in your MN wallet. The same for Staking coins, last but not least, just crypto Wallets, like Bitcoin and Etherum!
+Also Masternode information, like when you receive the last amount of coins in your MN wallet. The same for Staking coins, last but not least, just crypto Wallets, like Bitcoin and Ethereum!
 Crypto Dashboard is made to sort those things out and present you all your important information in one handy overview.
 
 
@@ -63,13 +63,6 @@ Example config.json:
   "crunch_history": true,
   "logfile": "cdashboard.json",
   "coins": {
-    "OXY Dutch Pool Mainnet": {
-      "coin": "OXY",
-      "node": "https://wallet.oxycoin.io",
-      "pubaddress": "15957132064002739627X",
-      "share_perc": "90",
-      "cointype": "dpos_delegate"
-    },
     "LWF Thamar mainnet": {
       "coin": "LWF",
       "node": "https://wallet.lwf.io",
@@ -130,7 +123,7 @@ optional arguments:
 ## Supported/tested chains / explorers
 
 At the moment CryptDashboard supports and is tested on the following chains / explorers:
-- DPoS:  OXY, LWF, ONZ, LISK, ARK, SHIFT, RISE, RipaEx
+- DPoS:  LWF, ONZ, LISK, ARK, SHIFT, RISE, RipaEx
 - Crypto wallets: all clones of Iquidus Explorer
 
 Known issues:
@@ -138,6 +131,13 @@ Known issues:
 - chainz.cryptoid.info - basic info is working, no last TX and date-received
 
 ## Changelog
+
+###### Release 0.95
+New feature:
+- Added Lisk support (dashboard is now integrated with Lisk API 1.0)
+- removed OXY references, since it is no DPoS anymore
+- known issue: the pop-up only should show info from the coin which was selected; currently it shows all the coins.
+- known issue: the history and 24 update functionality is still not working as expected.
 
 ###### Release 0.9/0.91
 New feature:
@@ -170,8 +170,8 @@ We are planning to integrate other cool features:
 
 Besides voting for de Dutch Pool delegates, if you like this DPoS Crypto Dashboard and it helps you to get organized, we would greatly appreciate if you would consider to show some support by donating to one of the below mentioned addresses.
 
-- OXY: 		902564290011692795X
 - LWF: 		2526916071607963001LWF
+- ETH (or OXY ;-) 0x7E1B5CAf074e0AB5B8aA8d7373e2756Ca105e707
 - ONZ: 		ONZfxHuBy5e39nipSZuSgcKhYURE6QkWsK2j
 - Shift: 	18040765904662116201S
 - Lisk: 	8890122000260193860L

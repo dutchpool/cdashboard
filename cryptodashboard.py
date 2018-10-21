@@ -7,7 +7,7 @@ import argparse
 
 ###########################################################################################
 #                                 DPoS Dashboard
-#                                 Version 0.92
+#                                 Version 0.94
 #                                 By Delegate Thamar
 ###########################################################################################
 
@@ -84,7 +84,6 @@ def get_node_url(url):
 
 ##############################################################################3
 # get_actual_share_perc
-# http: // verifier.dutchpool.io / oxy / report.json
 # http: // verifier.dutchpool.io / lwf / report.json
 # http: // verifier.dutchpool.io / shift / report.json
 # forg? = not forging?
@@ -242,6 +241,67 @@ def dict_compare(d1, d2):
     same = set(o for o in intersect_keys if d1[o] == d2[o])
     return added, removed, modified, same
 
+##############################################################################3
+# get_dpos_api_info
+# specific for Dpos nodes and their API
+# node_url: is the base of the API without the /, which is stripped earlier
+# address: can be several identifications: the public address; the publickey
+# api_info : indicates which part of the API we use (see the elif statement)
+#
+# a bit adhoc, but it should work https://node08.lisk.io/api/blocks
+
+def get_dpos_api_info_lisk(node_url, address, api_info):
+
+    if api_info == "balance":
+        request_url = node_url + '/api/accounts?address=' + address
+    elif api_info == "delegates":
+        request_url = node_url + '/api/delegates?address=' + address
+    elif api_info == "forgingdelegates":
+        request_url = node_url + '/api/delegates?offset=0&limit=101&sort=rank%3Aasc'
+    elif api_info == "voters":
+        request_url = node_url + '/api/voters?address=' + address
+    elif api_info == "votes":
+        request_url = node_url + '/api/votes?address=' + address + '&offset=0&limit=101&sort=username%3Aasc'
+    else:
+        return ""
+
+    try:
+        response = requests.get(request_url)
+        if response.status_code == 200:
+            response_json = response.json()
+
+            if response_json["data"]:
+                if api_info == "balance":
+                    return response_json["data"][0][api_info]
+                elif api_info == "voters":
+                    return int(response_json["data"]["votes"])
+                elif api_info == "votes":
+                    return response_json["data"]["votes"]
+                elif api_info == "forgingdelegates":
+                    return response_json["data"]
+                elif api_info == "delegates":
+                    return response_json["data"][0]
+                else:
+                    if api_info == "balance" or api_info == "voters":
+                        return 0
+                    return ""
+            else:
+                if api_info == "balance" or api_info == "voters":
+                    return 0
+                return ""
+        else:
+            print("Error (not 200): " + str(response.status_code) + ' URL: ' + request_url + ', response: ' + response.text)
+            if api_info == "balance" or api_info == "voters":
+                return 0
+            return ""
+    except:
+        print("Error: url is probably not correct: " + request_url)
+        # known case: with parameter 'delegates' and if there are no votes returned from API, this exception occurs
+        if api_info == "balance" or api_info == "voters":
+            return 0
+        else:
+            return ""
+
 
 ##############################################################################3
 # get_dpos_api_info
@@ -283,7 +343,7 @@ def get_dpos_api_info(node_url, address, api_info):
                         return 0
                     return ""
             else:
-                print("Error: " + request_url + ' ' + str(response.status_code) + ', response not 200' + api_info)
+                print("Error (not 200): " + str(response.status_code) + ' URL: ' + request_url + ', response: ' + response.text)
                 if api_info == "balance":
                     return 0
                 return ""
@@ -301,14 +361,11 @@ def get_dpos_api_info(node_url, address, api_info):
 # specific for Dpos private addresses (if you mark your Delegate Address also a second time as private
 # If you vote delegates, you want to keep track if they are still in forging position, besides the % they pay!
 # This function checks the known DPoS systems in combination of the private DPoS Wallet address and its votes on Delegates
-#
-# OXY
-#
 # load all the forging delegates
 #
 # function returns 2 values
 #   1. the total number of votes a DPoS address in this ecosystem can cast
-#   2. a list of names of delegates who are currently not forging (togehter with the current forging spot)
+#   2. a list of names of delegates who are currently not forging (together with the current forging spot)
 #
 def get_dpos_private_vote_info(coin_nodeurl, address):
     amount_forging_delegates = len(get_dpos_api_info(coin_nodeurl, "", "delegates"))
@@ -330,6 +387,27 @@ def get_dpos_private_vote_info(coin_nodeurl, address):
                 notforgingdelegates[item["username"]] = item[rate]
     return len(private_delegate_vote_info), notforgingdelegates
 
+def get_dpos_private_vote_info_lisk(coin_nodeurl, address):
+    amount_forging_delegates = 101
+    private_delegate_vote_info = get_dpos_api_info_lisk(coin_nodeurl, address, "votes")
+    forging_delegates_info = get_dpos_api_info_lisk(coin_nodeurl, "", "forgingdelegates")
+
+    # create a dict for the not forging names
+    notforgingdelegates = {}
+    forgingdelegatesnames = {}
+    voteddelegates = {}
+
+
+    for item in forging_delegates_info:
+        forgingdelegatesnames.update({item["username"]: item["rank"]})
+
+    for item in private_delegate_vote_info:
+        if item["username"] not in forgingdelegatesnames:
+            # get the rank of the not forgingdelegate
+            delegate_info = get_dpos_api_info_lisk(coin_nodeurl, item["address"], "delegates")
+            notforgingdelegates[item["username"]] = delegate_info["rank"]
+
+    return len(private_delegate_vote_info), notforgingdelegates
 
 
 def dashboard():
@@ -347,6 +425,7 @@ def dashboard():
     timereceived = 0
     amountreceived = 0
 
+
     for item in conf["coins"]:
         coinitemexists = 0
         coin_explorerlink = ""
@@ -354,6 +433,7 @@ def dashboard():
         amountreceived = 0
         timereceived = 0
         share_perc = 0
+        typeliskcoin =0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
@@ -365,37 +445,52 @@ def dashboard():
             if coin_explorerlink == None:
                 coin_explorerlink = copy.copy(coin_nodeurl.replace("wallet", "explorer"))
 
-            # get the public key of this address
-            coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
-            if coin_pubkey == None:
-                coin_pubkey = ""
+            if conf["coins"][item]["coin"].lower() == "lisk":
+                typeliskcoin = 1
+            if typeliskcoin == 1:
+                balance = int(float(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
 
-            # first check if url is working, if so, I assume other calls will also work ;-)
-            # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
+                # get all the delegate info
+                coin_lisk_delegateinfo = get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "delegates")
 
-            # get the current balance of this address
-            # todo : when wrong ip addres is filled-in in pubaddress ==> catch the error!
-            balance = int(float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
+                # get number of voters
+                nrofvoters = int(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "voters"))
 
-            # get all the delegate info
-            coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
+                # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
+                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"])
 
-            # get number of voters
-            nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
+            else:
+                # get the public key of this address
+                coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
+                if coin_pubkey == None:
+                    coin_pubkey = ""
 
-            # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
-            nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
+                # first check if url is working, if so, I assume other calls will also work ;-)
+                # there are addresses (wallets) which don't have a pubkey; This address has never-ever sent earlier a transaction through the blockchain!
 
-            # get last transaction
-            transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
-            if len(transactions) > 0:
-                amountreceived = transactions[0]["amount"] / 100000000
+                # get the current balance of this address
+                # todo : when wrong ip addres is filled-in in pubaddress ==> catch the error!
+                balance = int(float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
 
-                coin_epoch = get_dpos_api_info(coin_nodeurl, 0, "epoch")
-                # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
-                utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
-                # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
-                timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
+                # get all the delegate info
+                coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
+
+                # get number of voters
+                nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
+
+                # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
+                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
+
+                # get last transaction
+                transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
+                if len(transactions) > 0:
+                    amountreceived = transactions[0]["amount"] / 100000000
+
+                    coin_epoch = get_dpos_api_info(coin_nodeurl, 0, "epoch")
+                    # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
+                    utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
+                    # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
+                    timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
 
 
             # todo get the next forger: not here, probably in a more faster updated cycle!
@@ -435,16 +530,23 @@ def dashboard():
             }
 
             # Specific delegate Dpos coin info
-            if coin_delegateinfo != "":
+            if typeliskcoin == 1:
+                if coin_lisk_delegateinfo != "":
+                    coininfo_output["coins"][item]["delegatename"] = coin_lisk_delegateinfo["username"]
+                    coininfo_tocheck["rank"] = coin_lisk_delegateinfo["rank"]
+                    coininfo_tocheck["approval"] = coin_lisk_delegateinfo["approval"]
+                    coininfo_tocheck["nrofvoters"] = nrofvoters
+                    # todo                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
+            elif coin_delegateinfo != "":
                 coininfo_output["coins"][item]["delegatename"] = coin_delegateinfo["username"]
                 coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
                 coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
                 coininfo_tocheck["nrofvoters"] = nrofvoters
                 coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
-            coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
-            coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
-            coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
+                coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
+                coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
+                coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
 
             # archive the coin info:
             # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)

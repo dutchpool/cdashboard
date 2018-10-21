@@ -34,7 +34,7 @@
 <body ng-app="dashboardApp" ng-controller="indexCtrl">
 
 <div class="container">
-    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.91) by Dutch Pool</h4>
+    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.93) by Dutch Pool</h4>
     <div class="alert alert-info" role="alert">Dashboard updated: {{lastupdate|date:'medium'}}</div>
 
     <ul class="nav nav-tabs">
@@ -63,8 +63,8 @@
                 <thead>
                     <tr>
                         <th><a href="#" ng-click="orderByField='address'; reverseSort = !reverseSort">Identifier
-                            <span ng-show="orderByField == 'address' && !reverseSort" class="fa fa-caret-down"></span>
-                            <span ng-show="orderByField == 'address' && reverseSort" class="fa fa-caret-up"></span>
+                            <span ng-show="orderByField == 'address' && reverseSort" class="fa fa-caret-down"></span>
+                            <span ng-show="orderByField == 'address' && !reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
                         <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin
                             <span ng-show="orderByField == 'coin' && !reverseSort" class="fa fa-caret-down"></span>
@@ -149,7 +149,7 @@
                     </tr>
                 </tbody>
             </table>
-                * Note: More info about verified share percentage, go to the <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/oxy" target="_blank">OXY</a>, <a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
+                * Note: More info about verified share percentage, go to the <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
         </div>
       </p>
     </div>
@@ -327,7 +327,7 @@
         The only thing you need to do is find the correct blockchain explorer and fill in the config.json.
         <BR>
         <BR>
-        If you like this dashboard, please consider to vote for all the Dutch Pool delegates: dutch_pool, st3v3n, kippers, fnoufnou and thamar and receive the high sharing percentage of 90% per delegate!
+        If you like this dashboard, please consider to vote for all the Dutch Pool delegates: dutch_pool, st3v3n, kippers, fnoufnou and thamar and receive the high sharing percentage!
         More info you can find on <a target="_blank" href="http://dutchpool.io/">http://dutchpool.io</a>!<br>
         <BR>
     </div>
