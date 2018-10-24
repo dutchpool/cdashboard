@@ -61,7 +61,7 @@ def loadLog():
         data = json.load(open(LOGFILE, 'r'))
     except:
         data = {
-            "cryptodashboard_file_version": 0.91,
+            "cryptodashboard_file_version": 0.93,
             "lasttimecalculated": 0,
             "coins": {}
         }
@@ -537,6 +537,7 @@ def dashboard():
                     coininfo_tocheck["approval"] = coin_lisk_delegateinfo["approval"]
                     coininfo_tocheck["nrofvoters"] = nrofvoters
                     # todo                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
+
             elif coin_delegateinfo != "":
                 coininfo_output["coins"][item]["delegatename"] = coin_delegateinfo["username"]
                 coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
@@ -544,9 +545,9 @@ def dashboard():
                 coininfo_tocheck["nrofvoters"] = nrofvoters
                 coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
-                coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
-                coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
-                coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
+            coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
+            coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
+            coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
 
             # archive the coin info:
             # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
