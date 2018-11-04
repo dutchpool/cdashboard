@@ -34,7 +34,7 @@
 <body ng-app="dashboardApp" ng-controller="indexCtrl">
 
 <div class="container">
-    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.93) by Dutch Pool</h4>
+    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.95) by Dutch Pool</h4>
     <div class="alert alert-info" role="alert">Dashboard updated: {{lastupdate|date:'medium'}}</div>
 
     <ul class="nav nav-tabs">
@@ -94,27 +94,18 @@
                             <span ng-show="orderByField == 'approval' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'approval' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-                        <th><a href="#" ng-click="orderByField='share_perc'; reverseSort = !reverseSort">Proposed <BR>share %
-                            <span ng-show="orderByField == 'share_perc' && !reverseSort" class="fa fa-caret-down"></span>
-                            <span ng-show="orderByField == 'share_perc' && reverseSort" class="fa fa-caret-up"></span>
+                        <th><a href="#" ng-click="orderByField='producedblocks'; reverseSort = !reverseSort">Forged <BR>Blks(24h)
+                            <span ng-show="orderByField == 'producedblocks' && !reverseSort" class="fa fa-caret-down"></span>
+                            <span ng-show="orderByField == 'producedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-                        <th><a href="#" ng-click="orderByField='actual_share_perc'; reverseSort = !reverseSort">Verified<BR>share % *
-                            <span ng-show="orderByField == 'actual_share_perc' && !reverseSort" class="fa fa-caret-down"></span>
-                            <span ng-show="orderByField == 'actual_share_perc' && reverseSort" class="fa fa-caret-up"></span>
+                        <th><a href="#" ng-click="orderByField='missedblocks'; reverseSort = !reverseSort">Missed <BR>Blks(24h)
+                            <span ng-show="orderByField == 'missedblocks' && !reverseSort" class="fa fa-caret-down"></span>
+                            <span ng-show="orderByField == 'missedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-                        <th><a href="#" ng-click="orderByField='nrofvotescasted'; reverseSort = !reverseSort">#Votes casted |<BR> #Not Forg Delg.
+                        <th><a href="#" ng-click="orderByField='nrofvotescasted'; reverseSort = !reverseSort">Votes casted |<BR>Not Forg Delg
                             <span ng-show="orderByField == 'nrofvotescasted' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'nrofvotescasted' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-<!--                        <th><a href="#" ng-click="orderByField='amountreceived'; reverseSort = !reverseSort">Last received <BR>tx amount
-                            <span ng-show="orderByField == 'amountreceived' && !reverseSort" class="fa fa-caret-down"></span>
-                            <span ng-show="orderByField == 'amountreceived' && reverseSort" class="fa fa-caret-up"></span>
-                        </a></th>
-                        <th><a href="#" ng-click="orderByField='timereceived'; reverseSort = !reverseSort">Date received <BR>last tx
-                            <span ng-show="orderByField == 'timereceived' && !reverseSort" class="fa fa-caret-down"></span>
-                            <span ng-show="orderByField == 'timereceived' && reverseSort" class="fa fa-caret-up"></span>
-                        </a></th>
--->
                     </tr>
                 </thead>
                 <tbody>
@@ -127,29 +118,17 @@
                         <td ALIGN="right">{{acc.rank}} ({{acc.rankdelta24h >= 0 ? '+' : ''}}{{acc.rankdelta24h}})</td>
                         <td ALIGN="right">{{acc.nrofvoters}} ({{acc.nrofvoters24h >= 0 ? '+' : ''}}{{acc.nrofvoters24h }})</td>
                         <td ALIGN="right">{{acc.approval|number:1}}</td>
-                        <td ALIGN="right">{{acc.share_perc}}</td>
-                        <td ALIGN="right">{{acc.actual_share_perc}}</td>
-<!--
-                        <td ALIGN="right">{{acc.nrofvotescasted}} |
-                            <div data-toggle="tooltip" data-placement="left" data-html="true"
-                                 title="{{acc.tooltip}}">{{acc.nrofnotforingdelegates}}
-							</div>
--->
+                        <td ALIGN="right">{{acc.producedblocks|number:0}} ({{acc.producedblocks24h >= 0 ? '+' : ''}}{{acc.producedblocks24h }})</td>
+                        <td ALIGN="right">{{acc.missedblocks|number:0}} ({{acc.missedblocks24h >= 0 ? '+' : ''}}{{acc.missedblocks24h }})</td>
                         <td ALIGN="right">{{acc.nrofvotescasted}} | <a ng-click="setUsername({{acc.address}})"
                                                                        href="#myModal"
                                                                        data-toggle="modal"
                                                                        data-placement="bottom"
                                                                        title="{{acc.notforgingdelegates}}">{{acc.nrofnotforingdelegates}}</a></td>
-
-                        <!--
-                        <td ALIGN="right">{{acc.amountreceived|number:0}}</td>
-                        <td ALIGN="right">{{acc.timereceived * 1000 |date:'dd-MM-yy HH:mm'}}</td>
--->
-
                     </tr>
                 </tbody>
             </table>
-                * Note: More info about verified share percentage, go to the <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
+                Note: Info about verified share percentage, go to the Dutch Pools <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
         </div>
       </p>
     </div>
@@ -334,14 +313,11 @@
   </div>
 </div>
 
-           <hr>
-            <div align="center">
-                This software is free, created by Delegate Thamar, proud member of <a target="_blank" href="http://dutchpool.io/">Dutch Pool</a>!<br>
-                    <a href="https://github.com/dutchpool/cdashboard">Fork me on Github</a>
-                </div>
-
-        </div>
-
+<hr>
+    <div align="center">
+        This software is free, created by Delegate Thamar, proud member of <a target="_blank" href="http://dutchpool.io/">Dutch Pool</a>!<br>
+        <a href="https://github.com/dutchpool/cdashboard">Fork me on Github</a>
+    </div>
 
 <!-- Modal HTML -->
 

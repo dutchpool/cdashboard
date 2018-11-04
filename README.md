@@ -134,6 +134,14 @@ Known issues:
 
 ###### Release 0.95
 New feature:
+- Added: Number of forged blocks and missed blocks of Delegate node
+- Removed: Sharing percentages information; In current state not informative enough
+- Fixed bug for Lisk support (dashboard is now integrated with Lisk API 1.0) - last transaction info
+- Fixed bug: the history and 24h update functionality is now working (with running the monitor every hour)
+- known issue: the pop-up only should show info from the coin which was selected; currently it shows all the coins.
+
+###### Release 0.93
+New feature:
 - Added Lisk support (dashboard is now integrated with Lisk API 1.0)
 - removed OXY references, since it is no DPoS anymore
 - known issue: the pop-up only should show info from the coin which was selected; currently it shows all the coins.

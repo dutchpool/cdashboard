@@ -6,7 +6,7 @@ app.controller('indexCtrl', function($scope, $http) {
     $scope.accounts_wallet = [];
     $scope.CurrentDate = new Date();
 
-    $scope.orderByField = 'totalbalancedelta24h';
+    $scope.orderByField = 'timereceived';
     $scope.reverseSort = true;
     $scope.searchCoin   = '';     // set the default search/filter term
     $scope.dynamicPopover = {

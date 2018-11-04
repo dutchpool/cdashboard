@@ -4,10 +4,9 @@ import sys
 import time
 import argparse
 
-
 ###########################################################################################
 #                                 DPoS Dashboard
-#                                 Version 0.94
+#                                 Version 0.95
 #                                 By Delegate Thamar
 ###########################################################################################
 
@@ -38,14 +37,12 @@ if 'logfile' in conf:
 else:
     LOGFILE = 'cdashboard.json'
 
-
 # Load the blockchain explorer db file
 try:
     blockchainexplorerdb = json.load(open("blockchainexplorer.json", 'r'))
 except:
     print('Unable to load the blockchain explorer db file: blockchainexplorer.json.')
     sys.exit()
-
 
 
 def handle_error(ex, msg, exit):
@@ -56,12 +53,13 @@ def handle_error(ex, msg, exit):
     if exit:
         sys.exit()
 
+
 def loadLog():
     try:
         data = json.load(open(LOGFILE, 'r'))
     except:
         data = {
-            "cryptodashboard_file_version": 0.93,
+            "cryptodashboard_file_version": 0.95,
             "lasttimecalculated": 0,
             "coins": {}
         }
@@ -90,7 +88,6 @@ def get_node_url(url):
 # n.a. = not available / wrong verifier link
 
 def get_actual_share_perc(delegatename, coinname):
-
     verifierbaseurl = 'http://verifier.dutchpool.io/' + coinname.lower() + "/report.json"
     verified_sharing_perc = "forg?"
     try:
@@ -106,8 +103,8 @@ def get_actual_share_perc(delegatename, coinname):
             print("Error: " + verifierbaseurl + ' ' + str(response.status_code) + ', response not 200')
             return "n.a."
     except:
-            print("Error: url is probably not correct: " + verifierbaseurl)
-            return "n.a."
+        print("Error: url is probably not correct: " + verifierbaseurl)
+        return "n.a."
 
 
 ##############################################################################3
@@ -132,7 +129,6 @@ def get_actual_share_perc(delegatename, coinname):
 
 
 def get_walletbalance(url, address):
-
     walletbalance_exploreraddress = url + address
     # get the base_url of the url which is provided
     from urllib.parse import urlsplit
@@ -141,7 +137,8 @@ def get_walletbalance(url, address):
 
     for explorer in blockchainexplorerdb["explorer"]:
         if blockchainexplorerdb["explorer"][explorer]["exploreraddress"] == base_url:
-            walletbalance_exploreraddress = base_url + blockchainexplorerdb["explorer"][explorer]["api-getbalance"].replace("<address>", address)
+            walletbalance_exploreraddress = base_url + blockchainexplorerdb["explorer"][explorer][
+                "api-getbalance"].replace("<address>", address)
             if blockchainexplorerdb["explorer"][explorer]["outputvaluesatoshi"].lower() == "true":
                 returnfloatdevide = 100000000
             break
@@ -162,7 +159,6 @@ def get_walletbalance(url, address):
             else:
                 response_json_value = response_json
 
-
             return float(response_json_value) / returnfloatdevide
         else:
             return float(0)
@@ -170,12 +166,11 @@ def get_walletbalance(url, address):
         return float(0)
 
 
-##############################################################################3
+##############################################################################
 # get_walletlasttransaction
 # This function expects an url which is complete and  returns two numbers, the time and the amount!
 # This function expects
 def get_walletlasttransaction(url, walletaddress):
-
     # get the base_url of the url which is provided
     from urllib.parse import urlsplit
     base_url = "{0.scheme}://{0.netloc}/".format(urlsplit(url))
@@ -209,39 +204,40 @@ def get_walletlasttransaction(url, walletaddress):
                                     amountreceived = payment["value"]
                     return timereceived, amountreceived
                 else:
-                    return 0,0
+                    return 0, 0
             else:
-                return 0,0
+                return 0, 0
         else:
             if base_url == "https://chainz.cryptoid.info/":
                 # Get the latest transaction for this Address
                 # Currently an API key is needed and is not available to receive by email (dd April 9, 2018)
-    #            response = requests.get(base_url + "???" + walletaddress)
-    #            if response.status_code == 200:
-    #                response_json = response.json()
-                return 0,0
-            return 0,0
+                #            response = requests.get(base_url + "???" + walletaddress)
+                #            if response.status_code == 200:
+                #                response_json = response.json()
+                return 0, 0
+            return 0, 0
     except:
         return 0, 0
 
 
-##############################################################################3
+##############################################################################
 # compare dictionary's
 # x = dict(a=1, b=2)
 # y = dict(a=2, b=2)
 # added, removed, modified, same = dict_compare(x, y)
-#############################################################################3
+#############################################################################
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
     d2_keys = set(d2.keys())
     intersect_keys = d1_keys.intersection(d2_keys)
     added = d1_keys - d2_keys
     removed = d2_keys - d1_keys
-    modified = {o : (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
+    modified = {o: (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
     same = set(o for o in intersect_keys if d1[o] == d2[o])
     return added, removed, modified, same
 
-##############################################################################3
+
+##############################################################################
 # get_dpos_api_info
 # specific for Dpos nodes and their API
 # node_url: is the base of the API without the /, which is stripped earlier
@@ -250,14 +246,21 @@ def dict_compare(d1, d2):
 #
 # a bit adhoc, but it should work https://node08.lisk.io/api/blocks
 
-def get_dpos_api_info_lisk(node_url, address, api_info):
+# https://wallet.mylisk.com/api/transactions?recipientId=139289198949001083L&toTimestamp=1540633350&limit=10&offset=0&sort=amount%3Adesc
+# https://explorer.mylisk.com/api/getBlockStatus
+# https://node01.lisk.io/api/transactions?senderIdOrRecipientId=139289198949001083L&limit=10&offset=0&sort=timestamp:desc
 
+def get_dpos_api_info_lisk(node_url, address, api_info):
     if api_info == "balance":
         request_url = node_url + '/api/accounts?address=' + address
     elif api_info == "delegates":
         request_url = node_url + '/api/delegates?address=' + address
     elif api_info == "forgingdelegates":
         request_url = node_url + '/api/delegates?offset=0&limit=101&sort=rank%3Aasc'
+    elif api_info == "transactions":
+        request_url = node_url + '/api/transactions?recipientId=' + address + '&limit=10&offset=0&sort=timestamp:desc'
+    elif api_info == "epoch":
+        request_url = node_url + '/api/getBlockStatus'
     elif api_info == "voters":
         request_url = node_url + '/api/voters?address=' + address
     elif api_info == "votes":
@@ -270,7 +273,9 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
         if response.status_code == 200:
             response_json = response.json()
 
-            if response_json["data"]:
+            if api_info == "epoch":
+                return response_json[api_info]
+            elif response_json["data"]:
                 if api_info == "balance":
                     return response_json["data"][0][api_info]
                 elif api_info == "voters":
@@ -279,7 +284,7 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
                     return response_json["data"]["votes"]
                 elif api_info == "forgingdelegates":
                     return response_json["data"]
-                elif api_info == "delegates":
+                elif api_info == "delegates" or api_info == "transactions":
                     return response_json["data"][0]
                 else:
                     if api_info == "balance" or api_info == "voters":
@@ -290,7 +295,8 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
                     return 0
                 return ""
         else:
-            print("Error (not 200): " + str(response.status_code) + ' URL: ' + request_url + ', response: ' + response.text)
+            print("Error (not 200): " + str(response.status_code) + ' URL: '
+                  + request_url + ', response: ' + response.text)
             if api_info == "balance" or api_info == "voters":
                 return 0
             return ""
@@ -311,49 +317,50 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
 # api_info : indicates which part of the API we use (see the elif statement)
 
 def get_dpos_api_info(node_url, address, api_info):
-        if api_info == "publicKey":
-            request_url = node_url + '/api/accounts/getPublicKey?address=' + address
-        elif api_info == "delegate":
-            request_url = node_url + '/api/delegates/get?publicKey=' + address
-        elif api_info == "accounts":
-            request_url = node_url + '/api/delegates/voters?publicKey=' + address
-        elif api_info == "balance":
-            request_url = node_url + '/api/accounts/getBalance?address=' + address
-        elif api_info == "transactions":
-            request_url = node_url + '/api/transactions?limit=1&recipientId=' + address + '&orderBy=timestamp:desc'
-        elif api_info == "epoch":
-            request_url = node_url + '/api/blocks/getEpoch'
-        elif api_info == "delegates":
-            if address == "":
-                request_url = node_url + '/api/delegates'
-            else:
-                request_url = node_url + '/api/accounts/delegates?address=' + address
+    if api_info == "publicKey":
+        request_url = node_url + '/api/accounts/getPublicKey?address=' + address
+    elif api_info == "delegate":
+        request_url = node_url + '/api/delegates/get?publicKey=' + address
+    elif api_info == "accounts":
+        request_url = node_url + '/api/delegates/voters?publicKey=' + address
+    elif api_info == "balance":
+        request_url = node_url + '/api/accounts/getBalance?address=' + address
+    elif api_info == "transactions":
+        request_url = node_url + '/api/transactions?limit=1&recipientId=' + address + '&orderBy=timestamp:desc'
+    elif api_info == "epoch":
+        request_url = node_url + '/api/blocks/getEpoch'
+    elif api_info == "delegates":
+        if address == "":
+            request_url = node_url + '/api/delegates'
         else:
-            return ""
+            request_url = node_url + '/api/accounts/delegates?address=' + address
+    else:
+        return ""
 
-        try:
-            response = requests.get(request_url)
-            if response.status_code == 200:
-                response_json = response.json()
-                if response_json['success']:
-                     return response_json[api_info]
-                else:
-#                    print(request_url + ' ' + str(response.status_code) + ' Failed to get ' + api_info)
-                    if api_info == "balance":
-                        return 0
-                    return ""
+    try:
+        response = requests.get(request_url)
+        if response.status_code == 200:
+            response_json = response.json()
+            if response_json['success']:
+                return response_json[api_info]
             else:
-                print("Error (not 200): " + str(response.status_code) + ' URL: ' + request_url + ', response: ' + response.text)
+                #                    print(request_url + ' ' + str(response.status_code) + ' Failed to get ' + api_info)
                 if api_info == "balance":
                     return 0
                 return ""
-        except:
-                print("Error: url is probably not correct: " + request_url)
-                # known case: with parameter 'delegates' and if there are no votes returned from API, this exception occurs
-                if api_info == "balance":
-                    return 0
-                else:
-                    return ""
+        else:
+            print("Error (not 200): " + str(
+                response.status_code) + ' URL: ' + request_url + ', response: ' + response.text)
+            if api_info == "balance":
+                return 0
+            return ""
+    except:
+        print("Error: url is probably not correct: " + request_url)
+        # known case: with parameter 'delegates' and if there are no votes returned from API, this exception occurs
+        if api_info == "balance":
+            return 0
+        else:
+            return ""
 
 
 ##############################################################################3
@@ -374,7 +381,6 @@ def get_dpos_private_vote_info(coin_nodeurl, address):
     # create a dict for the not forging names
     notforgingdelegates = {}
 
-
     for item in private_delegate_vote_info:
         if "rank" in item:
             rate = "rank"
@@ -384,8 +390,9 @@ def get_dpos_private_vote_info(coin_nodeurl, address):
             return len(private_delegate_vote_info), notforgingdelegates
 
         if item[rate] > amount_forging_delegates:
-                notforgingdelegates[item["username"]] = item[rate]
+            notforgingdelegates[item["username"]] = item[rate]
     return len(private_delegate_vote_info), notforgingdelegates
+
 
 def get_dpos_private_vote_info_lisk(coin_nodeurl, address):
     amount_forging_delegates = 101
@@ -396,7 +403,6 @@ def get_dpos_private_vote_info_lisk(coin_nodeurl, address):
     notforgingdelegates = {}
     forgingdelegatesnames = {}
     voteddelegates = {}
-
 
     for item in forging_delegates_info:
         forgingdelegatesnames.update({item["username"]: item["rank"]})
@@ -418,13 +424,24 @@ def dashboard():
 
     # read the json, this is the database of the dashbaord
     coininfo_output = loadLog()
+    keep4history = 0
+
+    # get current day in month (we don't need anything else)
+    currentDay = datetime.now().day  # datetime's now is localized
+    # get the day of the last run of the script from the "lasttimecalculated"
+    timesampleday = datetime.fromtimestamp(coininfo_output['lasttimecalculated']).day
+
+    # these are not the same anymore, this run will be the run at around 00:00 (if hourly scheduld) and will be marked
+    # as a run to be archived if you want a daily archive with one day history samples
+    if timesampleday != currentDay:
+        keep4history = 1
 
     # Update last time the cryptodashboard has run
     coininfo_output['lasttimecalculated'] = int(time.time())
     timestamp = coininfo_output['lasttimecalculated']
+
     timereceived = 0
     amountreceived = 0
-
 
     for item in conf["coins"]:
         coinitemexists = 0
@@ -433,7 +450,7 @@ def dashboard():
         amountreceived = 0
         timereceived = 0
         share_perc = 0
-        typeliskcoin =0
+        typeliskcoin = 0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
@@ -448,7 +465,7 @@ def dashboard():
             if conf["coins"][item]["coin"].lower() == "lisk":
                 typeliskcoin = 1
             if typeliskcoin == 1:
-                balance = int(float(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
+                balance = int(float(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))) / 100000000
 
                 # get all the delegate info
                 coin_lisk_delegateinfo = get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "delegates")
@@ -457,7 +474,20 @@ def dashboard():
                 nrofvoters = int(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "voters"))
 
                 # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
-                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"])
+                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info_lisk(coin_nodeurl,
+                                                                            conf["coins"][item]["pubaddress"])
+
+                # get last transaction
+                transactions = get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
+                if len(transactions) > 0:
+                    amountreceived = int(transactions["amount"]) / 100000000
+
+                    coin_epoch = get_dpos_api_info_lisk(coin_explorerlink, 0, "epoch")
+                    # epoch "2016-05-24T17:00:00.000Z"
+                    # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
+                    utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
+                    # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
+                    timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions["timestamp"]
 
             else:
                 # get the public key of this address
@@ -470,7 +500,8 @@ def dashboard():
 
                 # get the current balance of this address
                 # todo : when wrong ip addres is filled-in in pubaddress ==> catch the error!
-                balance = int(float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance")))/100000000
+                balance = int(
+                    float(get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))) / 100000000
 
                 # get all the delegate info
                 coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
@@ -479,7 +510,8 @@ def dashboard():
                 nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
 
                 # get from a dpos address MaxNummerOfVotes you can cast and the names of the delegates who are currently not in the forging state with their forging position!
-                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl, conf["coins"][item]["pubaddress"])
+                nrofvotescasted, notforgingdelegates = get_dpos_private_vote_info(coin_nodeurl,
+                                                                                  conf["coins"][item]["pubaddress"])
 
                 # get last transaction
                 transactions = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "transactions")
@@ -491,7 +523,6 @@ def dashboard():
                     utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
                     # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
                     timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
-
 
             # todo get the next forger: not here, probably in a more faster updated cycle!
             # https://explorer.oxycoin.io/api/delegates/getNextForgers
@@ -514,7 +545,8 @@ def dashboard():
                 }
             else:
                 # these items can change now and then by the user...
-                coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
+                coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item][
+                    "pubaddress"]
                 coininfo_output["coins"][item]["share_perc"] = share_perc
 
             # generic variable coin info
@@ -527,6 +559,8 @@ def dashboard():
                 "approval": 0,
                 "nrofvoters": 0,
                 "actual_share_perc": 0,
+                "producedblocks": 0,
+                "missedblocks": 0
             }
 
             # Specific delegate Dpos coin info
@@ -536,6 +570,8 @@ def dashboard():
                     coininfo_tocheck["rank"] = coin_lisk_delegateinfo["rank"]
                     coininfo_tocheck["approval"] = coin_lisk_delegateinfo["approval"]
                     coininfo_tocheck["nrofvoters"] = nrofvoters
+                    coininfo_tocheck["producedblocks"] = coin_lisk_delegateinfo["producedBlocks"]
+                    coininfo_tocheck["missedblocks"] = coin_lisk_delegateinfo["missedBlocks"]
                     # todo                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
             elif coin_delegateinfo != "":
@@ -543,7 +579,9 @@ def dashboard():
                 coininfo_tocheck["rank"] = coin_delegateinfo["rate"]
                 coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
                 coininfo_tocheck["nrofvoters"] = nrofvoters
-                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
+                coininfo_tocheck["producedblocks"] = coin_delegateinfo["producedblocks"]
+                coininfo_tocheck["missedblocks"] = coin_delegateinfo["missedblocks"]
+#                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
             coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
             coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
@@ -560,11 +598,14 @@ def dashboard():
                     coininfo_alreadypresent = 1
                     break
 
+            if keep4history == 1:
+                coininfo_alreadypresent = 0
+
             if coininfo_alreadypresent == 0:
                 coininfo_output["coins"][item]["history"].append(coininfo_tocheck)
 
-            # try to figure out the 24h change of rank and nrofvoters
-            coininfo_output["coins"][item]["history"].sort(key=lambda x:x["timestamp"], reverse=True)
+            # try to figure out the 24h change of balance, rank and nrofvoters
+            coininfo_output["coins"][item]["history"].sort(key=lambda x: x["timestamp"], reverse=True)
             for coininfohistory in coininfo_output["coins"][item]["history"]:
                 timestamp24hpast = int(time.time()) - 23 * 60 * 59
                 # coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
@@ -573,10 +614,21 @@ def dashboard():
                 if coininfohistory["timestamp"] <= timestamp24hpast:
                     rankdelta24h = coininfohistory["rank"] - coininfo_tocheck["rank"]
                     coininfo_output["coins"][item]["rankdelta24h"] = rankdelta24h
+
                     votersdelta24h = coininfo_tocheck["nrofvoters"] - coininfohistory["nrofvoters"]
                     coininfo_output["coins"][item]["nrofvoters24h"] = votersdelta24h
+
                     totalbalancedelta24h = coininfo_tocheck["totalbalance"] - coininfohistory["totalbalance"]
                     coininfo_output["coins"][item]["totalbalancedelta24h"] = totalbalancedelta24h
+
+                    try:
+                        producedblocksdelta24h = coininfo_tocheck["producedblocks"] - coininfohistory["producedblocks"]
+                        coininfo_output["coins"][item]["producedblocksdelta24h"] = producedblocksdelta24h
+
+                        missedblocksdelta24h = coininfo_tocheck["missedblocks"] - coininfohistory["missedblocks"]
+                        coininfo_output["coins"][item]["missedblocksdelta24h"] = missedblocksdelta24h
+                    except:
+                        break
                     break
 
             if len(modified) > 1 or coininfo_alreadypresent == 0:
@@ -584,11 +636,13 @@ def dashboard():
 
             print(coininfo_output["coins"][item])
 
-        elif conf["coins"][item]["cointype"] == "masternode" or conf["coins"][item]["cointype"] == "pos_staking" or conf["coins"][item]["cointype"] == "wallet":
+        elif conf["coins"][item]["cointype"] == "masternode" or conf["coins"][item]["cointype"] == "pos_staking" or \
+                conf["coins"][item]["cointype"] == "wallet":
             # Section: masternode, pos_staking and wallet
             # todo: clean this up if neccesary to split it in masternode, pos_staking and or wallet
             balance = get_walletbalance(conf["coins"][item]["exploreraddress"], conf["coins"][item]["pubaddress"])
-            timereceived, amountreceived = get_walletlasttransaction(conf["coins"][item]["exploreraddress"], conf["coins"][item]["pubaddress"])
+            timereceived, amountreceived = get_walletlasttransaction(conf["coins"][item]["exploreraddress"],
+                                                                     conf["coins"][item]["pubaddress"])
 
             # get the base_url of the url which is provided
             base_url = "{0.scheme}://{0.netloc}/".format(urlsplit(conf["coins"][item]["exploreraddress"]))
@@ -606,7 +660,7 @@ def dashboard():
                     "explink": base_url + "address/" + conf["coins"][item]["pubaddress"],
                     "history": []
                 }
-            #create temp coininfo block to check if the same values are already in the json, if so, I don't want those values
+# create temp coininfo block to check if the same values are already in the json, if so, I don't want those values
             coininfo_tocheck = {
                 "timestamp": timestamp,
                 "rank": "",
@@ -625,14 +679,17 @@ def dashboard():
                     coininfo_alreadypresent = 1
                     break
 
+            if keep4history == 1:
+                coininfo_alreadypresent = 0
+
             if coininfo_alreadypresent == 0:
                 coininfo_output["coins"][item]["history"].append(coininfo_tocheck)
 
-
-            coininfo_output["coins"][item]["history"].sort(key=lambda x:x["timestamp"], reverse=True)
+            coininfo_output["coins"][item]["history"].sort(key=lambda x: x["timestamp"], reverse=True)
             for coininfohistory in coininfo_output["coins"][item]["history"]:
                 timestamp24hpast = int(time.time()) - 23 * 60 * 59
-                coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(int(coininfohistory["timestamp"])))
+                coin_timestamp_readable = time.strftime("%Y-%m-%d %H:%M",
+                                                        time.localtime(int(coininfohistory["timestamp"])))
                 timestamp24hpast_readable = time.strftime("%Y-%m-%d %H:%M", time.localtime(timestamp24hpast))
 
                 if coininfohistory["timestamp"] <= timestamp24hpast:
@@ -645,10 +702,10 @@ def dashboard():
 
             print(coininfo_output["coins"][item])
         else:
-            print("Unknown cointype: " + conf["coins"][item]["cointype"] + ", please check your config.json. Valid cointypes are: dpos_delegate, dpos_private, masternode pos,_staking and wallet.")
+            print("Unknown cointype: " + conf["coins"][item][
+                "cointype"] + ", please check your config.json. Valid cointypes are: dpos_delegate, dpos_private, masternode pos,_staking and wallet.")
 
     savelog(coininfo_output, LOGFILE)
-
 
 def logcruncher():
     # read the json, this is the database of the dashbaord
@@ -665,7 +722,8 @@ def logcruncher():
     for item in coininfo_tocrunch["coins"]:
 
         pasttime = currenttime
-        coininfohistory = sorted(coininfo_tocrunch["coins"][item]["history"], key=lambda k: ("timestamp" not in k, k.get("timestamp", None)), reverse=True)
+        coininfohistory = sorted(coininfo_tocrunch["coins"][item]["history"],
+                                 key=lambda k: ("timestamp" not in k, k.get("timestamp", None)), reverse=True)
         coin_daytimestamparray_readable = []
         coinhisroytitem_temp = {
             "history": []
@@ -683,26 +741,28 @@ def logcruncher():
 
 
             # If coin timestamp is not from today or yesterday; add only the first of a certain date and skip the rest of dat date
-            elif pasttime - 2*daytime >= coinhisroytitem["timestamp"]:
+            elif pasttime - 2 * daytime >= coinhisroytitem["timestamp"]:
                 if coin_timestamp_readable not in coin_daytimestamparray_readable:
                     coinhisroytitem_temp["history"].append(coinhisroytitem)
 
                     # add this timestamp to the compare array -  we don't need another sample for this date!
-                    coin_daytimestamparray_readable.append(time.strftime("%Y-%m-%d", time.localtime(int(coinhisroytitem["timestamp"]))))
+                    coin_daytimestamparray_readable.append(
+                        time.strftime("%Y-%m-%d", time.localtime(int(coinhisroytitem["timestamp"]))))
 
         coininfo_crunched["coins"][item]["history"] = coinhisroytitem_temp["history"].copy()
         savelog(coininfo_crunched, LOGFILE)
+
 
 #########################################################
 # Todo
 # 1. implement in the HTML the periode to look back from a dropdown; looks like: https://plnkr.co/edit/mig31CiYgHX3iH9DI6Wc?p=preview
 
-    # History weghalen van coins uit de log die uit de config.json zijn verwijderd
-    # Alle links naar de adressen checken, Ark Onz werken niet!
-    # Van Dpos private adressen: bepalen hoeveel er nog forgen en welke niet (pop-up?) …
+# History weghalen van coins uit de log die uit de config.json zijn verwijderd
+# Alle links naar de adressen checken, Ark Onz werken niet!
+# Van Dpos private adressen: bepalen hoeveel er nog forgen en welke niet (pop-up?) …
 
 
 if __name__ == "__main__":
-     dashboard()
-     if conf["crunch_history"]:
-         logcruncher()
+    dashboard()
+    if conf["crunch_history"]:
+        logcruncher()
