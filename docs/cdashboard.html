@@ -118,8 +118,8 @@
                         <td ALIGN="right">{{acc.rank}} ({{acc.rankdelta24h >= 0 ? '+' : ''}}{{acc.rankdelta24h}})</td>
                         <td ALIGN="right">{{acc.nrofvoters}} ({{acc.nrofvoters24h >= 0 ? '+' : ''}}{{acc.nrofvoters24h }})</td>
                         <td ALIGN="right">{{acc.approval|number:1}}</td>
-                        <td ALIGN="right">{{acc.producedblocks|number:0}} ({{acc.producedblocks24h >= 0 ? '+' : ''}}{{acc.producedblocks24h }})</td>
-                        <td ALIGN="right">{{acc.missedblocks|number:0}} ({{acc.missedblocks24h >= 0 ? '+' : ''}}{{acc.missedblocks24h }})</td>
+                        <td ALIGN="right">{{acc.producedblocks|number:0}} ({{acc.producedblocksdelta24h >= 0 ? '+' : ''}}{{acc.producedblocksdelta24h }})</td>
+                        <td ALIGN="right">{{acc.missedblocks|number:0}} ({{acc.missedblocksdelta24h >= 0 ? '+' : ''}}{{acc.missedblocksdelta24h }})</td>
                         <td ALIGN="right">{{acc.nrofvotescasted}} | <a ng-click="setUsername({{acc.address}})"
                                                                        href="#myModal"
                                                                        data-toggle="modal"
