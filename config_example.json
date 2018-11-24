@@ -3,6 +3,20 @@
   "crunch_history": true,
   "logfile": "cdashboard_example.json",
   "coins": {
+    "RipaEx Random mainnet": {
+      "coin": "XPX",
+      "node": "http://51.144.36.199:5500",
+      "pubaddress": "PTfp5xPpw6GmRE7TR4zyXT3797TSMXJ1Df",
+      "cointype": "dpos_delegate",
+      "exploreraddress": "https://ripa-exp.geops.net"
+	},
+    "Ark random delegate": {
+      "coin": "ARK",
+      "node": "https://node1.arknet.cloud",
+      "pubaddress": "ARAq9nhjCxwpWnGKDgxveAJSijNG8Y6dFQ",
+      "exploreraddress": "https://explorer.ark.io",
+      "cointype": "dpos_delegate"
+    },
     "sauco thamar main": {
       "coin": "SAUCO",
       "node": "https://wallet.sauco.io",
@@ -24,10 +38,10 @@
       "exploreraddress": "https://sbx-exp.geops.net",
       "cointype": "dpos_delegate"
     },
-    "Blockpoolthamarmainnet": {
+    "Blockpool random mainnet": {
       "coin": "BPL",
       "node": "http://13.56.163.57:9030",
-      "pubaddress": "BHEJFzU7UvRseAzWzP7kHEu9GiXUHsWSyn",
+      "pubaddress": "BPFa8UKadPm3cvGpVhKqXsudyZKoFJWyJg",
       "exploreraddress": "http://bplexp.blockpool.io",
       "cointype": "dpos_delegate"
     },
@@ -38,27 +52,11 @@
       "exploreraddress": "https://explorer.adamant.im",
       "cointype": "dpos_delegate"
     },
-    "RipaEx Random mainnet": {
-      "coin": "XPX",
-      "node": "http://178.62.240.12:5500",
-      "pubaddress": "PTfp5xPpw6GmRE7TR4zyXT3797TSMXJ1Df",
-      "cointype": "dpos_delegate",
-      "exploreraddress": "https://ripa-exp.geops.net",
-      "share_perc": "90"
-	},
-    "Ark random delegate": {
-      "coin": "ARK",
-      "node": "https://node1.arknet.cloud",
-      "pubaddress": "ARAq9nhjCxwpWnGKDgxveAJSijNG8Y6dFQ",
-      "exploreraddress": "https://explorer.ark.io",
-      "cointype": "dpos_delegate"
-    },
     "ONZ Dutchpool Mainnet": {
       "coin": "ONZ",
       "node": "https://node10.onzcoin.com",
       "pubaddress": "ONZkL6Jm1MKGWnVzMzkJ8jwTxbQ8Cudqh1Hw",
       "exploreraddress": "https://explorer.onzcoin.com",
-      "share_perc": "90",
       "cointype": "dpos_delegate"
     },
     "Zencash random wallet": {
