@@ -6,7 +6,7 @@ import argparse
 
 ###########################################################################################
 #                                 DPoS Dashboard
-#                                 Version 0.95
+#                                 Version 0.97
 #                                 By Delegate Thamar
 ###########################################################################################
 
@@ -250,8 +250,11 @@ def dict_compare(d1, d2):
 # https://explorer.mylisk.com/api/getBlockStatus
 # https://node01.lisk.io/api/transactions?senderIdOrRecipientId=139289198949001083L&limit=10&offset=0&sort=timestamp:desc
 
+# /api/blocks?limit=10&offset=0&generatorPublicKey=ec111c8ad482445cfe83d811a7edd1f1d2765079c99d7d958cca1354740b7614&sort=timestamp%3Aasc
+
 def get_dpos_api_info_lisk(node_url, address, api_info):
-    if api_info == "balance":
+
+    if api_info == "balance" or api_info == "publicKey":
         request_url = node_url + '/api/accounts?address=' + address
     elif api_info == "delegates":
         request_url = node_url + '/api/delegates?address=' + address
@@ -261,6 +264,8 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
         request_url = node_url + '/api/transactions?recipientId=' + address + '&limit=10&offset=0&sort=timestamp:desc'
     elif api_info == "epoch":
         request_url = node_url + '/api/getBlockStatus'
+    elif api_info == "blocks":
+        request_url = node_url + '/api/blocks?limit=10&offset=0&generatorPublicKey=' + address + '&sort=timestamp:desc'
     elif api_info == "voters":
         request_url = node_url + '/api/voters?address=' + address
     elif api_info == "votes":
@@ -276,12 +281,16 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
             if api_info == "epoch":
                 return response_json[api_info]
             elif response_json["data"]:
+                if api_info == "publicKey":
+                    return response_json["data"][0]["publicKey"]
                 if api_info == "balance":
                     return response_json["data"][0][api_info]
                 elif api_info == "voters":
                     return int(response_json["data"]["votes"])
                 elif api_info == "votes":
                     return response_json["data"]["votes"]
+                elif api_info == "blocks":
+                    return response_json["data"][0]["timestamp"]
                 elif api_info == "forgingdelegates":
                     return response_json["data"]
                 elif api_info == "delegates" or api_info == "transactions":
@@ -323,6 +332,8 @@ def get_dpos_api_info(node_url, address, api_info):
         request_url = node_url + '/api/delegates/get?publicKey=' + address
     elif api_info == "accounts":
         request_url = node_url + '/api/delegates/voters?publicKey=' + address
+    elif api_info == "blocks":
+        request_url = node_url + '/api/blocks?generatorPublicKey=' + address
     elif api_info == "balance":
         request_url = node_url + '/api/accounts/getBalance?address=' + address
     elif api_info == "transactions":
@@ -429,12 +440,16 @@ def dashboard():
     # get current day in month (we don't need anything else)
     currentDay = datetime.now().day  # datetime's now is localized
     # get the day of the last run of the script from the "lasttimecalculated"
-    timesampleday = datetime.fromtimestamp(coininfo_output['lasttimecalculated']).day
+    if coininfo_output['lasttimecalculated'] > 0:
+        timesampleday = datetime.fromtimestamp(coininfo_output['lasttimecalculated']).day
 
-    # these are not the same anymore, this run will be the run at around 00:00 (if hourly scheduld) and will be marked
-    # as a run to be archived if you want a daily archive with one day history samples
-    if timesampleday != currentDay:
+        # these are not the same anymore, this run will be the run at around 00:00 (if hourly scheduld) and will be marked
+        # as a run to be archived if you want a daily archive with one day history samples
+        if timesampleday != currentDay:
+            keep4history = 1
+    else:
         keep4history = 1
+
 
     # Update last time the cryptodashboard has run
     coininfo_output['lasttimecalculated'] = int(time.time())
@@ -451,6 +466,7 @@ def dashboard():
         timereceived = 0
         share_perc = 0
         typeliskcoin = 0
+        lastforgedblock_datetime = 0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
@@ -465,6 +481,11 @@ def dashboard():
             if conf["coins"][item]["coin"].lower() == "lisk":
                 typeliskcoin = 1
             if typeliskcoin == 1:
+                # get the public key of this address
+                coin_pubkey = get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
+                if coin_pubkey == None:
+                    coin_pubkey = ""
+
                 balance = int(float(get_dpos_api_info_lisk(coin_nodeurl, conf["coins"][item]["pubaddress"], "balance"))) / 100000000
 
                 # get all the delegate info
@@ -489,6 +510,11 @@ def dashboard():
                     # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
                     timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions["timestamp"]
 
+                # get the Date and Time of the last forged block of this delegate
+                blocks_delegateinfo = get_dpos_api_info_lisk(coin_nodeurl, coin_pubkey, "blocks")
+                if blocks_delegateinfo:
+                    lastforgedblock_timestamp = (utc_dt - datetime(1970, 1, 1)).total_seconds() + blocks_delegateinfo
+
             else:
                 # get the public key of this address
                 coin_pubkey = get_dpos_api_info(coin_nodeurl, conf["coins"][item]["pubaddress"], "publicKey")
@@ -505,6 +531,11 @@ def dashboard():
 
                 # get all the delegate info
                 coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
+
+                # get the Date and Time of the last forged block of this delegate
+                blocks_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "blocks")
+                if blocks_delegateinfo:
+                    lastforgedblock_timestamp = blocks_delegateinfo[0]["timestamp"]
 
                 # get number of voters
                 nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
@@ -523,6 +554,11 @@ def dashboard():
                     utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
                     # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
                     timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
+
+                # get the Date and Time of the last forged block of this delegate
+                blocks_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "blocks")
+                if blocks_delegateinfo:
+                    lastforgedblock_timestamp = (utc_dt - datetime(1970, 1, 1)).total_seconds() + blocks_delegateinfo[0]["timestamp"]
 
             # todo get the next forger: not here, probably in a more faster updated cycle!
             # https://explorer.oxycoin.io/api/delegates/getNextForgers
@@ -558,9 +594,10 @@ def dashboard():
                 "rank": 0,
                 "approval": 0,
                 "nrofvoters": 0,
-                "actual_share_perc": 0,
+#                "actual_share_perc": 0,
                 "producedblocks": 0,
-                "missedblocks": 0
+                "missedblocks": 0,
+                "lastforgedblock_timestamp": lastforgedblock_timestamp
             }
 
             # Specific delegate Dpos coin info

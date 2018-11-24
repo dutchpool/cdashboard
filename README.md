@@ -132,6 +132,16 @@ Known issues:
 
 ## Changelog
 
+###### Release 0.97
+- New feature Added: tooltip when hovering over the Missed Blks(24h) colon which indicates the time of the last forged block 
+
+###### Release 0.96
+- New feature Added: With the new Number of forged blocks and missed blocks, we can indicate if a node is not forging
+    - Missed Blks(24h) = cell = red ==> node is missing blocks! You need to fix it!
+    - Missed Blks(24h) = cell = green ==> node is not missing blocks anymore! It did, and this will show green, 24h!
+    - Missed Blks(24h) = cell = normal ==> node is forging, no problem's in the last 24h 
+
+
 ###### Release 0.95
 New feature:
 - Added: Number of forged blocks and missed blocks of Delegate node

@@ -1,6 +1,5 @@
 {
-  "cryptodashboard_file_version": 0.8,
-  "crunch_history": true,
+  "cryptodashboard_file_version": 0.97
   "logfile": "cdashboard_example.json",
   "coins": {
     "sauco thamar main": {
@@ -10,11 +9,18 @@
       "exploreraddress": "https://explorer.sauco.io",
       "cointype": "dpos_delegate"
     },
+    "Qredit Karpos main": {
+      "coin": "XQR",
+      "node": "http://185.85.18.192:4100",
+      "pubaddress": "QdJNUYu6UHLFWMRQ8xfKcGsA7PbS1WLax8",
+      "exploreraddress": "http://qredit.digitalwindmill.com/#",
+      "cointype": "dpos_delegate"
+    },
     "swapblocks thamar main": {
       "coin": "SBX",
       "node": "http://164.132.216.107:4100",
       "pubaddress": "XEh2rb6xz2g3yjbH5fYaU8Lsg52Y6K1dxy",
-      "exploreraddress": "https://api.swapblocks.io/",
+      "exploreraddress": "https://sbx-exp.geops.net",
       "cointype": "dpos_delegate"
     },
     "Blockpoolthamarmainnet": {
@@ -39,12 +45,11 @@
       "exploreraddress": "https://ripa-exp.geops.net",
       "share_perc": "90"
 	},
-    "Ark random delegate Mainnet": {
+    "Ark random delegate": {
       "coin": "ARK",
-      "node": "http://54.37.225.112:4001",
-      "pubaddress": "ARKfan7iMEK3cn8QDWVzcKdCCpL4MkASHb",
+      "node": "https://node1.arknet.cloud",
+      "pubaddress": "ARAq9nhjCxwpWnGKDgxveAJSijNG8Y6dFQ",
       "exploreraddress": "https://explorer.ark.io",
-      "share_perc": "?",
       "cointype": "dpos_delegate"
     },
     "ONZ Dutchpool Mainnet": {
@@ -88,16 +93,22 @@
       "pubaddress": "12987214176579039005LWF",
       "cointype": "dpos_delegate"
     },
-    "Lisk Dutchpool Mainnet": {
+    "lisk example mainnet": {
       "coin": "Lisk",
       "node": "https://wallet.mylisk.com",
-      "pubaddress": "13208673187956262833L",
+      "pubaddress": "14593474056247442712L",
       "cointype": "dpos_delegate"
     },
     "Shift Dutchpool Mainnet": {
       "coin": "Shift",
       "node": "https://wallet.shiftnrg.org",
       "pubaddress": "929480631438194624S",
+      "cointype": "dpos_delegate"
+    },
+    "Shift random Mainnet": {
+      "coin": "Shift",
+      "node": "https://wallet.shiftnrg.org",
+      "pubaddress": "10856301809812467456S",
       "cointype": "dpos_delegate"
     },
     "LWF Testnet node": {

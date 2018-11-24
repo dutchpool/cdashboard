@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -15,7 +16,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="app.js"></script>
-
 
 
     <script type="text/javascript">
@@ -34,7 +34,7 @@
 <body ng-app="dashboardApp" ng-controller="indexCtrl">
 
 <div class="container">
-    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.95) by Dutch Pool</h4>
+    <h4>DPoS-Masternode-Staking-Wallets Dashboard (v0.97) by Dutch Pool</h4>
     <div class="alert alert-info" role="alert">Dashboard updated: {{lastupdate|date:'medium'}}</div>
 
     <ul class="nav nav-tabs">
@@ -98,7 +98,7 @@
                             <span ng-show="orderByField == 'producedblocks' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'producedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-                        <th><a href="#" ng-click="orderByField='missedblocks'; reverseSort = !reverseSort">Missed <BR>Blks(24h)
+                        <th><a href="#" ng-click="orderByField='missedblocks'; reverseSort = !reverseSort">Missed *<BR>Blks(24h)
                             <span ng-show="orderByField == 'missedblocks' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'missedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
@@ -119,16 +119,20 @@
                         <td ALIGN="right">{{acc.nrofvoters}} ({{acc.nrofvoters24h >= 0 ? '+' : ''}}{{acc.nrofvoters24h }})</td>
                         <td ALIGN="right">{{acc.approval|number:1}}</td>
                         <td ALIGN="right">{{acc.producedblocks|number:0}} ({{acc.producedblocksdelta24h >= 0 ? '+' : ''}}{{acc.producedblocksdelta24h }})</td>
-                        <td ALIGN="right">{{acc.missedblocks|number:0}} ({{acc.missedblocksdelta24h >= 0 ? '+' : ''}}{{acc.missedblocksdelta24h }})</td>
+                        <td ALIGN="right"
+                            ng-class="{'increasing-class': acc.missedblockstatus === 2, 'decreasing-class': acc.missedblockstatus === 1, 'default-color': acc.missedblockstatus === 0}"
+                            title="{{acc.lastforgedblock_timestamp * 1000 |date:'dd-MM-yy HH:mm'}}">
+                            {{acc.missedblocks|number:0}} ({{acc.missedblocksdelta24h >= 0 ? '+' : ''}}{{acc.missedblocksdelta24h }})</td>
                         <td ALIGN="right">{{acc.nrofvotescasted}} | <a ng-click="setUsername({{acc.address}})"
-                                                                       href="#myModal"
-                                                                       data-toggle="modal"
-                                                                       data-placement="bottom"
-                                                                       title="{{acc.notforgingdelegates}}">{{acc.nrofnotforingdelegates}}</a></td>
+                               href="#myModal"
+                               data-toggle="modal"
+                               data-placement="bottom"
+                               title="{{acc.notforgingdelegates}}">{{acc.nrofnotforingdelegates}}</a></td>
                     </tr>
                 </tbody>
             </table>
                 Note: Info about verified share percentage, go to the Dutch Pools <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
+            * tooltip: timestamp last forged block - natural: All ok - <font color="red">red: node is missing blocks</font> - <font color="green">green: node missed blocks, but not anymore (green for 24h)</font>
         </div>
       </p>
     </div>
