@@ -1,5 +1,6 @@
 {
   "cryptodashboard_file_version": 0.97,
+  "crunch_history": true,
   "logfile": "cdashboard_example.json",
   "coins": {
     "sauco thamar main": {
