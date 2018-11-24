@@ -50,16 +50,12 @@ The parameters:
       - cointype: options are: dpos_delegate, dpos_private, masternode, pos_staking and wallet
          - currently, dpos_delegate is the first section of the dashboard; second section: dpos_private, masternode, pos_staking; third section: crypto wallets like BTC, ETC etc.. If you want to change this, you can do this in the case-statement in the app.js.
       - exploreraddress: coin explorer web address (for all the cointypes, if the format of the DPoS coin for the explorer address is wallet.something_coin.xx; wallet will be replaced internally with explorer and you don't have to fill in the explorer parameter)
-      - share_perc: if you want you can fill in your Delegate sharing percentage, it will be shown next to the percentage which is retrieved from the Dutch Pool verifier, if available. 
-         - output values can be: 
-            - forg? : delegate is not forging
-            - n.a. : not available / info could not be retrieved
 
 
 Example config.json:
 ```
 {
-  "cryptodashboard_file_version": 0.8,
+  "cryptodashboard_file_version": 0.97,
   "crunch_history": true,
   "logfile": "cdashboard.json",
   "coins": {
@@ -67,7 +63,6 @@ Example config.json:
       "coin": "LWF",
       "node": "https://wallet.lwf.io",
       "pubaddress": "567015584193522108LWF",
-      "share_perc": "90",
       "cointype": "dpos_delegate"
     },
      "onzdutchpoolmainnet": {
@@ -75,13 +70,12 @@ Example config.json:
       "node": "https://node10.onzcoin.com",
       "pubaddress": "ONZkL6Jm1MKGWnVzMzkJ8jwTxbQ8Cudqh1Hw",
       "exploreraddress": "https://explorer.onzcoin.com",
-      "share_perc": "90",
       "cointype": "dpos_delegate"
     }
  }
 }
 ```
-Above is an indication of how the config.json must look like. We have included a config_example.json for inspiration and also an almost empty json (config_template.json ) which you can copy and use this as your starting point to fill all your coin info.
+Above is an indication of how the config.json must look like. We have included a config_example.json which includes an entry for most DPoS systems from which you can copy and fill-in your specific information per DPoS coin, also an almost empty json (config_template.json ) which you can copy to the standard config.json and use this as your starting point to fill all your coin info.
 
 
 ## Start it:
@@ -92,11 +86,11 @@ or if you want to use another config file:
 
 ```python3 cryptodashboard.py -c config2.json```
 
-It produces a file (if default) "cdashboard.json" with all the crypto dashboard information which can be presented with the included HTML setup. Tip: the 24h information will not show immediately.
+It produces a file (if default) "cdashboard.json" with all the crypto dashboard information which can be presented with the included HTML setup. Note: the 24h information will not show immediately.
 
-You have to copy the "cdashboard.json" file to the /docs folder to let the website have access to the gathered coin information. 
+You have to copy (use crontab) the "cdashboard.json" file to the /docs folder to let the website have access to the gathered coin information. 
 
-We advise to run the cryptodashboard python script every hour to collect it's data. The cronjob to configure this (use crontab -e):
+We advise to run the cryptodashboard python script every hour to collect it's data. The crontab to configure this (use crontab -e):
 
 ```
 00 * * * * cd ~/cdashboard && python3 ~/cdashboard/cryptodashboard.py
@@ -123,10 +117,10 @@ optional arguments:
 ## Supported/tested chains / explorers
 
 At the moment CryptDashboard supports and is tested on the following chains / explorers:
-- DPoS:  LWF, ONZ, LISK, ARK, SHIFT, RISE, RipaEx
+- DPoS (mainnet and testnet):  LWF, ONZ, LISK 1.0, ARK, SHIFT, RISE, RipaEx, Qredit, Sauco, Skelpy, Adamant, Blockpool 
 - Crypto wallets: all clones of Iquidus Explorer
 
-Known issues:
+Known issues for Masternodes and staking chains:
 - a lot of explorer chains are not supported yet; working on it!
 - chainz.cryptoid.info - basic info is working, no last TX and date-received
 
