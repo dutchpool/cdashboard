@@ -16,10 +16,10 @@
       "exploreraddress": "http://qredit.digitalwindmill.com/#",
       "cointype": "dpos_delegate"
     },
-    "swapblocks thamar main": {
+    "Swapblocks -Red Node- main": {
       "coin": "SBX",
       "node": "http://164.132.216.107:4100",
-      "pubaddress": "XEh2rb6xz2g3yjbH5fYaU8Lsg52Y6K1dxy",
+      "pubaddress": "XWYpSurnMcVJZEfYxJN66ZwmTdVtr3BTJY",
       "exploreraddress": "https://sbx-exp.geops.net",
       "cointype": "dpos_delegate"
     },
@@ -27,7 +27,7 @@
       "coin": "BPL",
       "node": "http://13.56.163.57:9030",
       "pubaddress": "BHEJFzU7UvRseAzWzP7kHEu9GiXUHsWSyn",
-      "exploreraddress": "https://bplexp.blockpool.io",
+      "exploreraddress": "http://bplexp.blockpool.io",
       "cointype": "dpos_delegate"
     },
     "Adamant Thamar mainnet": {
@@ -37,10 +37,10 @@
       "exploreraddress": "https://explorer.adamant.im",
       "cointype": "dpos_delegate"
     },
-    "xpxthamarmainnet": {
+    "RipaEx Random mainnet": {
       "coin": "XPX",
       "node": "http://178.62.240.12:5500",
-      "pubaddress": "PAYojNKxHEf2vCbGMd7UKMxFSRiv1eMbZ1",
+      "pubaddress": "PTfp5xPpw6GmRE7TR4zyXT3797TSMXJ1Df",
       "cointype": "dpos_delegate",
       "exploreraddress": "https://ripa-exp.geops.net",
       "share_perc": "90"
@@ -60,10 +60,10 @@
       "share_perc": "90",
       "cointype": "dpos_delegate"
     },
-    "Zencash wallet": {
+    "Zencash random wallet": {
       "coin": "ZEN",
       "node": "",
-      "pubaddress": "zncm4DDYUYmaSJjct7jY3vfTDCg6qsvmTbb",
+      "pubaddress": "zna5pynWVkcVNEqQJy2GE1NGQ5qzQnrJVVe",
       "exploreraddress": "https://explorer.zensystem.io/",
       "cointype": "wallet"
     },
@@ -87,7 +87,7 @@
       "pubaddress": "1624734468715881862R",
       "cointype": "dpos_private"
     },
-    "LWF Dutchpool Mainnet": {
+    "LWF Dutchpool mainnet": {
       "coin": "LWF",
       "node": "https://wallet.lwf.io",
       "pubaddress": "12987214176579039005LWF",
@@ -120,7 +120,7 @@
     "Lisk random private address": {
       "coin": "Lisk",
       "node": "https://wallet.mylisk.com",
-      "pubaddress": "3273376520443016195L",
+      "pubaddress": "17511329349256962284L",
       "cointype": "dpos_private"
     },
     "Tokugawa random masternode": {
@@ -144,10 +144,10 @@
       "exploreraddress": "http://xuez.donkeypool.com/ext/getbalance/",
       "cointype": "masternode"
     },
-    "Whisper - staking coin - Nr 100": {
+    "Whisper - staking coin": {
       "coin": "Whisper",
       "node": "",
-      "pubaddress": "Wgb7jdVvYmzMLhcVLPM1XiUnF3BznjXyqB",
+      "pubaddress": "WeihivEhmoanYsTbAKtLfCRJP5fUV2BTop",
       "exploreraddress": "https://explorer.wispr.tech/ext/getbalance/",
       "cointype": "pos_staking"
     }
