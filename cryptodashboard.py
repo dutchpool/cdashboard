@@ -466,7 +466,7 @@ def dashboard():
         timereceived = 0
         share_perc = 0
         typeliskcoin = 0
-        lastforgedblock_datetime = 0
+        lastforgedblock_timestamp = 0
 
         if item in coininfo_output["coins"]:
             coinitemexists = 1
