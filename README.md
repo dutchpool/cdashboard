@@ -10,9 +10,18 @@ Also Masternode information, like when you receive the last amount of coins in y
 Crypto Dashboard is made to sort those things out and present you all your important information in one handy overview.
 
 
-If you like this dashboard, please consider to vote for all the Dutch Pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and "thamar" and receive the high sharing percentage of 90% per delegate!
+DPoS Dashboard Features, for active delegates but also for private wallets:
+- Monitor your delegate(s) Rank, Balance, Approval, Votes received, Forged blocks, Missed blocks, Votes casted, Votes casted on not forging delegates
+- Monitor your delegate(s)performance over the last 24 hours
+- See quickly if your node is missing blocks or is recovered
+- When blocks are missing now ant then, this is an indicator that something could be wrong with the server, pro-active maintenance can be initiated!
+- <B>No secrets!!! No Pass phrases!!!</B> needed in de config.json! All this is done with the public addresses of the wallets/delegate(s)and the API's available in the several DPoS platforms
+- No need to run this script on a delegate's node/server! Every server/VPS with python will do
+- By actively inspecting your "Votes casted" on "(not) forging delegates", you can quickly re-vote and monetise your voting weight much better
+
 
 If you want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
+If you like this dashboard created by delegate Thamar, please consider to vote for all the Dutch Pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and off course "thamar"! A small donation is also apreciated (see for more donation info below)
 
 _More info about Dutch Pool, our mission, our other tools and contributions to the DPoS ecosystem, please visit http://dutchpool.io_
 
@@ -170,17 +179,18 @@ New feature:
 
 ## To Do
 We are planning to integrate other cool features:
+- create a script that for one delegate name, creates the config.json for all the known dpos-systems
+- make it possible to remove info/history from a removed wallet/delegate address
 - show the voted delegates of one wallet with their percentages that they are paying in the pop-up 
-- in the HTML overview, select the history period with a dropdown, now it is 24h and 48h;
+- in the HTML overview, select the history period with a dropdown, now it is 24h and 48h
 - add a live indication in the DPoS main dashboard, the time until a node will forge
 - add euro / dollar for amount of coins - If already possible! Not main focus currently
-- create a web interface to maintain the config.json for adding, removing, adjusting coin info.
+- create a web interface to maintain the config.json for adding, removing, adjusting coin info
 - create an HTML with main focus Masternodes instead of DPoS
-
 
 ## Donations
 
-Besides voting for de Dutch Pool delegates, if you like this DPoS Crypto Dashboard and it helps you to get organized, we would greatly appreciate if you would consider to show some support by donating to one of the below mentioned addresses.
+Besides voting for de Dutch Pool delegates, if you like this DPoS Crypto Dashboard and it helps you to get organized, or even monitize your voting weight better, we would greatly appreciate if you would consider to show some support by donating to one of the below mentioned addresses.
 
 - LWF: 		2526916071607963001LWF
 - ETH (or OXY ;-) 0x7E1B5CAf074e0AB5B8aA8d7373e2756Ca105e707

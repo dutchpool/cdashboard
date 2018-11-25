@@ -589,7 +589,6 @@ def dashboard():
                 "rank": 0,
                 "approval": 0,
                 "nrofvoters": 0,
-#                "actual_share_perc": 0,
                 "producedblocks": 0,
                 "missedblocks": 0,
                 "lastforgedblock_timestamp": lastforgedblock_timestamp
