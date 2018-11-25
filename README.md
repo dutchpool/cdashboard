@@ -14,10 +14,10 @@ DPoS Dashboard Features, for active delegates but also for private wallets:
 - Monitor your delegate(s) Rank, Balance, Approval, Votes received, Forged blocks, Missed blocks, Votes casted, Votes casted on not forging delegates
 - Monitor your delegate(s)performance over the last 24 hours
 - See quickly if your node is missing blocks or is recovered
-- When blocks are missing now ant then, this is an indicator that something could be wrong with the server, pro-active maintenance can be initiated!
+- When blocks are missing now and then, this is an indicator that something could be wrong with the server, pro-active maintenance can be initiated!
 - <B>No secrets!!! No Pass phrases!!!</B> needed in de config.json! All this is done with the public addresses of the wallets/delegate(s)and the API's available in the several DPoS platforms
 - No need to run this script on a delegate's node/server! Every server/VPS with python will do
-- By actively inspecting your "Votes casted" on "(not) forging delegates", you can quickly re-vote and monetise your voting weight much better
+- By actively inspecting your "Votes casted" on "(not) forging delegates", you can quickly re-vote and monetise your voting weight more wisely
 
 
 If you want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
