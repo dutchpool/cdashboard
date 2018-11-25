@@ -98,7 +98,7 @@
                             <span ng-show="orderByField == 'producedblocks' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'producedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
-                        <th><a href="#" ng-click="orderByField='missedblocks'; reverseSort = !reverseSort">Missed *<BR>Blks(24h)
+                        <th><a href="#" ng-click="orderByField='missedblocks'; reverseSort = !reverseSort">Missed *<BR>Blcks(24h)
                             <span ng-show="orderByField == 'missedblocks' && !reverseSort" class="fa fa-caret-down"></span>
                             <span ng-show="orderByField == 'missedblocks' && reverseSort" class="fa fa-caret-up"></span>
                         </a></th>
@@ -132,7 +132,7 @@
                 </tbody>
             </table>
                 Note: Info about verified share percentage, go to the Dutch Pools <B>delegate verifier</B> (<a href="http://verifier.dutchpool.io/lwf" target="_blank">LWF</a>, <a href="http://verifier.dutchpool.io/shift" target="_blank">SHIFT</a>)<BR><BR>
-            * tooltip: timestamp last forged block - natural: All ok - <font color="red">red: node is missing blocks</font> - <font color="green">green: node missed blocks, but not anymore (green for 24h)</font>
+            * tooltip: timestamp last forged block - natural: All ok - <font color="red">red: node is missing blocks</font> - <font color="green">green: node missed blocks, but not anymore (will be green for 24h)</font>
         </div>
       </p>
     </div>
@@ -154,7 +154,7 @@
                             <th><a href="#" ng-click="orderByField='address'; reverseSort = !reverseSort">Identifier</a></th>
                             <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin</a></th>
                             <th><a href="#" ng-click="orderByField='delegatename'; reverseSort = !reverseSort">Delegate</a></th>
-                            <th>History (last 24hour; in json is more history) <BR>Timestamp | Rank | coins | Approval(%) | Votes | act share%</th>
+                            <th>History (last 24hour; in json is more history) <BR>Timestamp | Rank | coins | Approval(%) | Votes | Missed blocks 24h</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,7 +170,7 @@
                                         coins: {{history.totalbalance|number:0}} |
                                         apprl: {{history.approval|number:1}} % |
                                         voters: {{history.nrofvoters}} |
-                                        share%: {{history.actual_share_perc}}
+                                        miss blck: {{history.missedblocksdelta24h}}
                                     </li>
                                 </ul>
                             </td>
@@ -197,9 +197,9 @@
                         <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin</a></th>
                         <th><a href="#" ng-click="orderByField='totalbalance'; reverseSort = !reverseSort">Balance <BR> # coins</a></th>
                         <th><a href="#" ng-click="orderByField='totalbalancedelta24h'; reverseSort = !reverseSort">Balance <BR>24h dif</a></th>
-                        <th><a href="#" ng-click="orderByField='nrofvotescasted'; reverseSort = !reverseSort">#Votes casted |<BR> #Not Forg Delg.</a></th>
-                        <th><a href="#" ng-click="orderByField='amountreceived'; reverseSort = !reverseSort">Last received <BR> tx amount</a></th>
-                        <th><a href="#" ng-click="orderByField='timereceived'; reverseSort = !reverseSort">Date <BR> received</a></th>
+                        <th><a href="#" ng-click="orderByField='nrofvotescasted'; reverseSort = !reverseSort">#Votes casted |<BR>#Not Forg Delg.</a></th>
+                        <th><a href="#" ng-click="orderByField='amountreceived'; reverseSort = !reverseSort">Last received <BR>tx amount</a></th>
+                        <th><a href="#" ng-click="orderByField='timereceived'; reverseSort = !reverseSort">Date <BR>received</a></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -236,7 +236,7 @@
                     <tr>
                         <th><a href="#" ng-click="orderByField='address'; reverseSort = !reverseSort">Identifier</a></th>
                         <th><a href="#" ng-click="orderByField='coin'; reverseSort = !reverseSort">Coin</a></th>
-                        <th>History <BR>Timestamp | # coins | Last txid - ammount | Date received</th>
+                        <th>History <BR>Timestamp | # coins | Last tx - amount | Date received</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -248,8 +248,8 @@
                                     <li ng-repeat="history in (acc.history|orderBy:'-timestamp')" ng-if="(CurrentDate/1000 - 480*60*60) <= history.timestamp">
                                     {{history.timestamp * 1000 |date:'dd-MM-yy HH:mm'}} |
                                     #coins: {{history.totalbalance|number:1}} |
-                                    Txid amount: {{history.amountreceived|number:2}} |
-                                    #date received: {{history.timereceived * 1000 |date:'dd-MM-yy HH:mm'}}</li>
+                                    Tx amount: {{history.amountreceived|number:2}} |
+                                    date received: {{history.timereceived * 1000 |date:'dd-MM-yy HH:mm'}}</li>
                             </ul>
                         </td>
                     </tr>

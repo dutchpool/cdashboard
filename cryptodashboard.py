@@ -532,11 +532,6 @@ def dashboard():
                 # get all the delegate info
                 coin_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "delegate")
 
-                # get the Date and Time of the last forged block of this delegate
-                blocks_delegateinfo = get_dpos_api_info(coin_nodeurl, coin_pubkey, "blocks")
-                if blocks_delegateinfo:
-                    lastforgedblock_timestamp = blocks_delegateinfo[0]["timestamp"]
-
                 # get number of voters
                 nrofvoters = len(get_dpos_api_info(coin_nodeurl, coin_pubkey, "accounts"))
 
@@ -566,7 +561,7 @@ def dashboard():
             if conf["coins"][item]["cointype"] == "dpos_delegate":
                 share_perc = conf["coins"][item].get("share_perc")
 
-            # check if item/coin already exists? If not, add coin to the output list
+             # check if item/coin already exists? If not, add coin to the output list
             if coinitemexists != 1:
                 coininfo_output["coins"][item] = {
                     "coin": conf["coins"][item]["coin"],
@@ -623,6 +618,31 @@ def dashboard():
             coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
             coininfo_output["coins"][item].update({"nrofnotforingdelegates": len(notforgingdelegates)})
             coininfo_output["coins"][item]["notforgingdelegates"] = notforgingdelegates
+
+            # try to figure out the change of missedblocks between this sample and the previous
+            # if missedblocksdelta24h > 0 we have an indication, delegate is missing blocks
+            # previous sample:  coininfo_output["coins"][item]["missedblocks"]
+            # current sample:   coininfo_tocheck["missedblocks"]
+            # results:
+            #   previous_sample > current_sample  ==> amount missed blocks is still increasing, Not good!
+            #   previous sample <= current sample ==> amount missed blocks is the same or decreasing, Good!
+            # color the output cell of this delegate! Red = increasing = 2; Green = steady or decreasing = 1; transparent = no blocks missing = 0
+            setstatus = 0
+            try:
+                previous_sample = coininfo_output["coins"][item]["missedblocks"]
+                current_sample = coininfo_tocheck["missedblocks"]
+                sample = current_sample - previous_sample
+
+                if coininfo_output["coins"][item]["missedblocksdelta24h"] > 0:
+                    if sample > 0:
+                        setstatus = 2
+                    elif sample <= 0:
+                        setstatus = 1
+                else:
+                    setstatus = 0
+            except:
+                pass
+            coininfo_output["coins"][item].update({"missedblockstatus": setstatus})
 
             # archive the coin info:
             # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
@@ -794,9 +814,6 @@ def logcruncher():
 # Todo
 # 1. implement in the HTML the periode to look back from a dropdown; looks like: https://plnkr.co/edit/mig31CiYgHX3iH9DI6Wc?p=preview
 
-# History weghalen van coins uit de log die uit de config.json zijn verwijderd
-# Alle links naar de adressen checken, Ark Onz werken niet!
-# Van Dpos private adressen: bepalen hoeveel er nog forgen en welke niet (pop-up?) …
 
 
 if __name__ == "__main__":
