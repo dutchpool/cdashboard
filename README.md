@@ -21,7 +21,7 @@ DPoS Dashboard Features, for active delegates but also for private wallets:
 
 
 If you want to see a working demo of the Dpos-crypto-dashboard, please visit: http://cdashboarddemo.thamar.net/
-If you like this dashboard created by delegate Thamar, please consider to vote for all the Dutch Pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and off course "thamar"! A small donation is also apreciated (see for more donation info below)
+If you like this dashboard created by delegate Thamar, please consider to vote for all the Dutch Pool delegates: "dutch_pool", "st3v3n", "kippers", "fnoufnou" and off course "thamar"! A small donation is also appreciated (see for more donation info below)
 
 _More info about Dutch Pool, our mission, our other tools and contributions to the DPoS ecosystem, please visit http://dutchpool.io_
 
@@ -53,7 +53,8 @@ The parameters:
 - logfile: the file where all gathered coin info is stored; default "cdashboard.json"; you can change the logfile name the way you like (handy for setting up multiple config files with multiple log files, using one python script)
 - coins: section where the coin info is represented
    - identifier: coin identifier, can be any random name, can hold white spaces, but I suggest to keep it short
-      - coin: coin name
+      - coin: coin name; 
+         - Note: For a Lisk entry you have to fill in LSK or LISK as coin name (case insensitive)!
       - node: DPoS coin node web address (only for the DPoS coins)
       - pubaddress: the public address of the coins wallet (never add your private address/seeds!!!)
       - cointype: options are: dpos_delegate, dpos_private, masternode, pos_staking and wallet
@@ -68,6 +69,13 @@ Example config.json:
   "crunch_history": true,
   "logfile": "cdashboard.json",
   "coins": {
+      "lisk dutch_pool donation": {
+      "coin": "Lisk",
+      "node": "https://wallet.mylisk.com",
+      "pubaddress": "8890122000260193860L",
+      "exploreraddress": "https://explorer.mylisk.com",
+      "cointype": "dpos_private"
+    },
     "LWF Thamar mainnet": {
       "coin": "LWF",
       "node": "https://wallet.lwf.io",

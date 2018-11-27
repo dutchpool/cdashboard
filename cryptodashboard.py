@@ -478,7 +478,7 @@ def dashboard():
             if coin_explorerlink == None:
                 coin_explorerlink = copy.copy(coin_nodeurl.replace("wallet", "explorer"))
 
-            if conf["coins"][item]["coin"].lower() == "lisk":
+            if conf["coins"][item]["coin"].lower() == "lisk" or conf["coins"][item]["coin"].lower() == "lsk":
                 typeliskcoin = 1
             if typeliskcoin == 1:
                 # get the public key of this address
