@@ -91,7 +91,7 @@ def get_actual_share_perc(delegatename, coinname):
     verifierbaseurl = 'http://verifier.dutchpool.io/' + coinname.lower() + "/report.json"
     verified_sharing_perc = "forg?"
     try:
-        response = requests.get(verifierbaseurl)
+        response = requests.get(verifierbaseurl, timeout=10)
         if response.status_code == 200:
             response_json = response.json()
             for item in response_json["delegates"]:
@@ -144,7 +144,7 @@ def get_walletbalance(url, address):
             break
 
     try:
-        response = requests.get(walletbalance_exploreraddress)
+        response = requests.get(walletbalance_exploreraddress, timeout=10)
         if response.status_code == 200:
             response_json = response.json()
 
@@ -179,20 +179,20 @@ def get_walletlasttransaction(url, walletaddress):
 
     # Get the latest transaction for this Address
     try:
-        response = requests.get(base_url + "ext/getaddress/" + walletaddress)
+        response = requests.get(base_url + "ext/getaddress/" + walletaddress, timeout=10)
         if response.status_code == 200:
             response_json = response.json()
             last_txs_nr = len(response_json["last_txs"])
             addresses = response_json["last_txs"][last_txs_nr - 1]["addresses"]
 
             # Get with this address the latest Blockhash for this Address
-            response2 = requests.get(base_url + "api/getrawtransaction?txid=" + addresses + "&decrypt=1")
+            response2 = requests.get(base_url + "api/getrawtransaction?txid=" + addresses + "&decrypt=1", timeout=10)
             if response2.status_code == 200:
                 response_json2 = response2.json()
                 blockhash = response_json2["blockhash"]
 
                 # Get with this address the latest time and amount for the last txid
-                response3 = requests.get(base_url + "api/getblock?hash=" + blockhash)
+                response3 = requests.get(base_url + "api/getblock?hash=" + blockhash, timeout=10)
                 if response3.status_code == 200:
                     response_json3 = response3.json()
                     timereceived = response_json3.get("time", 0)
@@ -274,7 +274,7 @@ def get_dpos_api_info_lisk(node_url, address, api_info):
         return ""
 
     try:
-        response = requests.get(request_url)
+        response = requests.get(request_url, timeout=10)
         if response.status_code == 200:
             response_json = response.json()
 
@@ -349,7 +349,7 @@ def get_dpos_api_info(node_url, address, api_info):
         return ""
 
     try:
-        response = requests.get(request_url)
+        response = requests.get(request_url, timeout=10)
         if response.status_code == 200:
             response_json = response.json()
             if response_json['success']:
@@ -461,6 +461,7 @@ def dashboard():
     for item in conf["coins"]:
         coinitemexists = 0
         coin_explorerlink = ""
+        coin_poolwebaddress = ""
         share_perc = 0
         amountreceived = 0
         timereceived = 0
@@ -477,6 +478,10 @@ def dashboard():
             coin_explorerlink = copy.copy(conf["coins"][item].get("exploreraddress"))
             if coin_explorerlink == None:
                 coin_explorerlink = copy.copy(coin_nodeurl.replace("wallet", "explorer"))
+
+            coin_poolwebaddress = copy.copy(conf["coins"][item].get("poolwebaddress"))
+            if coin_poolwebaddress == None:
+                coin_poolwebaddress = ""
 
             if conf["coins"][item]["coin"].lower() == "lisk" or conf["coins"][item]["coin"].lower() == "lsk":
                 typeliskcoin = 1
@@ -568,6 +573,7 @@ def dashboard():
                     "cointype": conf["coins"][item]["cointype"],
                     "delegatename": "",
                     "explink": coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"],
+                    "poolwebaddress": coin_poolwebaddress,
                     "share_perc": share_perc,
                     "nrofvotescasted": 0,
                     "nrofnotforingdelegates": 0,
@@ -576,8 +582,8 @@ def dashboard():
                 }
             else:
                 # these items can change now and then by the user...
-                coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item][
-                    "pubaddress"]
+                coininfo_output["coins"][item]["explink"] = coin_explorerlink + "/address/" + conf["coins"][item]["pubaddress"]
+                coininfo_output["coins"][item]["poolwebaddress"] = coin_poolwebaddress
                 coininfo_output["coins"][item]["share_perc"] = share_perc
 
             # generic variable coin info
@@ -626,22 +632,22 @@ def dashboard():
             #   previous_sample > current_sample  ==> amount missed blocks is still increasing, Not good!
             #   previous sample <= current sample ==> amount missed blocks is the same or decreasing, Good!
             # color the output cell of this delegate! Red = increasing = 2; Green = steady or decreasing = 1; transparent = no blocks missing = 0
-            setstatus = 0
+            missedblockstatus = 0
             try:
                 previous_sample = coininfo_output["coins"][item]["missedblocks"]
                 current_sample = coininfo_tocheck["missedblocks"]
                 sample = current_sample - previous_sample
 
-                if coininfo_output["coins"][item]["missedblocksdelta24h"] > 0:
+                if coininfo_output["coins"][item]["missedblocksdelta24h"] > 0 or sample > 0:
                     if sample > 0:
-                        setstatus = 2
+                        missedblockstatus = 2
                     elif sample <= 0:
-                        setstatus = 1
+                        missedblockstatus = 1
                 else:
-                    setstatus = 0
+                    missedblockstatus = 0
             except:
                 pass
-            coininfo_output["coins"][item].update({"missedblockstatus": setstatus})
+            coininfo_output["coins"][item].update({"missedblockstatus": missedblockstatus})
 
             # archive the coin info:
             # 1. check if coin info is the same as earlier samples, in the history (timestamp may differ)
