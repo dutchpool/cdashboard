@@ -617,7 +617,10 @@ def dashboard():
                 coininfo_tocheck["approval"] = coin_delegateinfo["approval"]
                 coininfo_tocheck["nrofvoters"] = nrofvoters
                 coininfo_tocheck["producedblocks"] = coin_delegateinfo["producedblocks"]
-                coininfo_tocheck["missedblocks"] = coin_delegateinfo["missedblocks"]
+                try:
+                    coininfo_tocheck["missedblocks"] = coin_delegateinfo["missedblocks"]
+                except:
+                    pass
 #                coininfo_tocheck["actual_share_perc"] = get_actual_share_perc(coin_delegateinfo["username"], conf["coins"][item]["coin"])
 
             coininfo_output["coins"][item].update({"nrofvotescasted": nrofvotescasted})
