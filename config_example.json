@@ -3,6 +3,20 @@
   "crunch_history": true,
   "logfile": "cdashboard_example.json",
   "coins": {
+    "DigitGem random mainnet": {
+      "coin": "DigiGem",
+      "node": "http://138.197.133.81:4003",
+      "pubaddress": "DMhjN6mtp8xrZ1hGHg1ccFRmyX8yghXUuR",
+      "exploreraddress": "http://www.explorer.digitalgemtoken.com:4200/#",
+      "cointype": "dpos_delegate"
+    },
+    "Kapu random mainnet": {
+      "coin": "KAPU",
+      "node": "http://51.15.136.166:9702",
+      "pubaddress": "KNnP1sBxo1rmt4UYQpiSYt3SpnUExJF5KV",
+      "exploreraddress": "https://explorer.kapu.one",
+      "cointype": "dpos_delegate"
+    },
     "Ripa Thamar Mainnet": {
       "coin": "XPX",
       "node": "http://51.15.85.181:5502",
@@ -21,7 +35,7 @@
       "coin": "XQR",
       "node": "http://qredit.cloud",
       "pubaddress": "QQn3RV4H6o93KybfuZHaAVVP9XanN9XehJ",
-      "exploreraddress": "http://qredit.digitalwindmill.com/#",
+      "exploreraddress": "http://qredit.digitalwindmill.com",
       "cointype": "dpos_delegate"
     },
     "Blockpool random mainnet": {
@@ -77,10 +91,10 @@
       "pubaddress": "14593474056247442712L",
       "cointype": "dpos_delegate"
     },
-    "Shift Dutchpool Mainnet": {
+    "Shift Kippers Mainnet": {
       "coin": "Shift",
       "node": "https://wallet.shiftnrg.org",
-      "pubaddress": "929480631438194624S",
+      "pubaddress": "6017177556148370474S",
       "cointype": "dpos_delegate"
     },
     "Shift random Mainnet": {
@@ -89,11 +103,19 @@
       "pubaddress": "10856301809812467456S",
       "cointype": "dpos_delegate"
     },
-    "Lisk random private address": {
-      "coin": "Lisk",
-      "node": "https://wallet.mylisk.com",
-      "pubaddress": "17511329349256962284L",
-      "cointype": "dpos_private"
+    "shifthamartestnet": {
+      "coin": "Shift",
+      "node": "https://twallet.shiftnrg.com.mx",
+      "pubaddress": "11097345542487296756S",
+      "exploreraddress": "https://www.shiftproject.io/testexplorer",
+      "cointype": "dpos_delegate"
+    },
+    "Phantom thamar mainnet": {
+      "coin": "Phantom",
+      "node": "http://95.183.52.99:4003",
+      "pubaddress": "PHJFB4Px8sLyB4xEShrDsP4MTSqHSKGgPm",
+      "exploreraddress": "https://explorer.phantom.org/#",
+      "cointype": "dpos_delegate"
     },
     "Tokugawa random masternode": {
       "coin": "Tokugawa",
