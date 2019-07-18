@@ -508,8 +508,10 @@ def dashboard():
                     coin_epoch = get_dpos_api_info_lisk(coin_explorerlink, 0, "epoch")
                     # epoch "2016-05-24T17:00:00.000Z"
                     # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
+                    if len(coin_epoch) > 0:
                         utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
                         # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
+                        timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions["timestamp"]
 
                 # get the Date and Time of the last forged block of this delegate
                 blocks_delegateinfo = get_dpos_api_info_lisk(coin_nodeurl, coin_pubkey, "blocks")
@@ -547,9 +549,9 @@ def dashboard():
 
                     coin_epoch = get_dpos_api_info(coin_nodeurl, 0, "epoch")
                     # convert the epoch time to a normal Unix time in sec datetime.strptime('1984-06-02T19:05:00.000Z', '%Y-%m-%dT%H:%M:%S.%fZ')
-                    timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
                     if len(coin_epoch) > 0:
                         utc_dt = datetime.strptime(coin_epoch, '%Y-%m-%dT%H:%M:%S.%fZ')
+                        # Convert UTC datetime to seconds since the Epoch and add the found transaction timestamp to get the correct Unix date/time in sec.
                         timereceived = (utc_dt - datetime(1970, 1, 1)).total_seconds() + transactions[0]["timestamp"]
 
                 # get the Date and Time of the last forged block of this delegate
