@@ -3,12 +3,12 @@
   "crunch_history": true,
   "logfile": "cdashboard_example.json",
   "coins": {
-    "RipaEx Random mainnet": {
+    "Ripa Thamar Mainnet": {
       "coin": "XPX",
-      "node": "http://51.144.36.199:5500",
-      "pubaddress": "PTfp5xPpw6GmRE7TR4zyXT3797TSMXJ1Df",
-      "cointype": "dpos_delegate",
-      "exploreraddress": "https://ripa-exp.geops.net"
+      "node": "http://40.84.6.6:5500",
+      "pubaddress": "PAYojNKxHEf2vCbGMd7UKMxFSRiv1eMbZ1",
+      "exploreraddress": "https://explorer.ripaex.io",
+      "cointype": "dpos_delegate"
 	},
     "Ark random delegate": {
       "coin": "ARK",
@@ -17,25 +17,11 @@
       "exploreraddress": "https://explorer.ark.io",
       "cointype": "dpos_delegate"
     },
-    "sauco thamar main": {
-      "coin": "SAUCO",
-      "node": "https://wallet.sauco.io",
-      "pubaddress": "448323509713452276S",
-      "exploreraddress": "https://explorer.sauco.io",
-      "cointype": "dpos_delegate"
-    },
-    "Qredit Karpos main": {
+    "Qredit thamar main": {
       "coin": "XQR",
-      "node": "http://185.85.18.192:4100",
-      "pubaddress": "QdJNUYu6UHLFWMRQ8xfKcGsA7PbS1WLax8",
+      "node": "http://136.144.215.24:4103",
+      "pubaddress": "QQn3RV4H6o93KybfuZHaAVVP9XanN9XehJ",
       "exploreraddress": "http://qredit.digitalwindmill.com/#",
-      "cointype": "dpos_delegate"
-    },
-    "Swapblocks -Red Node- main": {
-      "coin": "SBX",
-      "node": "http://164.132.216.107:4100",
-      "pubaddress": "XWYpSurnMcVJZEfYxJN66ZwmTdVtr3BTJY",
-      "exploreraddress": "https://sbx-exp.geops.net",
       "cointype": "dpos_delegate"
     },
     "Blockpool random mainnet": {
@@ -52,13 +38,6 @@
       "exploreraddress": "https://explorer.adamant.im",
       "cointype": "dpos_delegate"
     },
-    "ONZ Dutchpool Mainnet": {
-      "coin": "ONZ",
-      "node": "https://node10.onzcoin.com",
-      "pubaddress": "ONZkL6Jm1MKGWnVzMzkJ8jwTxbQ8Cudqh1Hw",
-      "exploreraddress": "https://explorer.onzcoin.com",
-      "cointype": "dpos_delegate"
-    },
     "Zencash random wallet": {
       "coin": "ZEN",
       "node": "",
@@ -66,10 +45,10 @@
       "exploreraddress": "https://explorer.zensystem.io/",
       "cointype": "wallet"
     },
-    "BitcoinWallet - random address": {
+    "BitcoinWallet-Genesis address = 65.44": {
       "coin": "BTC",
       "node": "",
-      "pubaddress": "3BMEXezgDMZMxnbSBNwDoyMvjUAxQxmXg4",
+      "pubaddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
       "exploreraddress": "https://blockchain.info/q/addressbalance/",
       "cointype": "wallet"
     },
@@ -83,13 +62,13 @@
     "Rise random private wallet": {
       "coin": "Rise",
       "node": "https://wallet.rise.vision",
-      "pubaddress": "1624734468715881862R",
+      "pubaddress": "17503501931066818033R",
       "cointype": "dpos_private"
     },
-    "LWF Dutchpool mainnet": {
-      "coin": "LWF",
-      "node": "https://wallet.lwf.io",
-      "pubaddress": "12987214176579039005LWF",
+    "Rise thamar mainnet": {
+      "coin": "Rise",
+      "node": "https://wallet.rise.vision",
+      "pubaddress": "14618965301536376191R",
       "cointype": "dpos_delegate"
     },
     "lisk example mainnet": {
@@ -110,12 +89,6 @@
       "pubaddress": "10856301809812467456S",
       "cointype": "dpos_delegate"
     },
-    "LWF Testnet node": {
-      "coin": "LWF",
-      "node": "https://twallet.lwf.io",
-      "pubaddress": "401197032093586591LWF",
-      "cointype": "dpos_delegate"
-    },
     "Lisk random private address": {
       "coin": "Lisk",
       "node": "https://wallet.mylisk.com",
@@ -126,14 +99,7 @@
       "coin": "Tokugawa",
       "node": "",
       "pubaddress": "Tx8ZVV8Wv8Z68oqQzMaUBcBAMpEcfd6g66",
-      "exploreraddress": "http://188.166.218.74/ext/getbalance/",
-      "cointype": "masternode"
-    },
-    "Innova random masternode": {
-      "coin": "innova",
-      "node": "",
-      "pubaddress": "iAxyERVUfcjBbW2tRXcHbXFmaGVP2TAM3q",
-      "exploreraddress": "http://explorer.innovacoin.info/ext/getbalance/",
+      "exploreraddress": "http://165.227.180.67/ext/getbalance/",
       "cointype": "masternode"
     },
     "Xuez - random masternode": {

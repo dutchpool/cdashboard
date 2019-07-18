@@ -6,8 +6,8 @@ app.controller('indexCtrl', function($scope, $http) {
     $scope.accounts_wallet = [];
     $scope.CurrentDate = new Date();
 
-    $scope.orderByField = 'timereceived';
-    $scope.reverseSort = true;
+    $scope.orderByField = 'coin';
+    $scope.reverseSort = false;
     $scope.searchCoin   = '';     // set the default search/filter term
     $scope.dynamicPopover = {
         content: 'Hello, World!',
