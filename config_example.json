@@ -5,7 +5,7 @@
   "coins": {
     "Ripa Thamar Mainnet": {
       "coin": "XPX",
-      "node": "http://40.84.6.6:5500",
+      "node": "http://51.15.85.181:5502",
       "pubaddress": "PAYojNKxHEf2vCbGMd7UKMxFSRiv1eMbZ1",
       "exploreraddress": "https://explorer.ripaex.io",
       "cointype": "dpos_delegate"
@@ -19,14 +19,14 @@
     },
     "Qredit thamar main": {
       "coin": "XQR",
-      "node": "http://136.144.215.24:4103",
+      "node": "http://qredit.cloud",
       "pubaddress": "QQn3RV4H6o93KybfuZHaAVVP9XanN9XehJ",
       "exploreraddress": "http://qredit.digitalwindmill.com/#",
       "cointype": "dpos_delegate"
     },
     "Blockpool random mainnet": {
       "coin": "BPL",
-      "node": "http://13.56.163.57:9030",
+      "node": "http://s09.mc.blockpool.io:9030",
       "pubaddress": "BPFa8UKadPm3cvGpVhKqXsudyZKoFJWyJg",
       "exploreraddress": "http://bplexp.blockpool.io",
       "cointype": "dpos_delegate"
